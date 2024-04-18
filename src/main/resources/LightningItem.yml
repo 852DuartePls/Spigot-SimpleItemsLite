@@ -1,0 +1,9 @@
+# LightningItem configuration:
+LightningItem:
+  Material: AMETHYST_SHARD
+  DisplayName: "&b&k!!! &3Electric Shard &b&k!!!"
+  Lore:
+    - "&9ʀɪɢʜᴛ ᴄʟɪᴄᴋ ᴛᴏ ᴄʜᴀʀɢᴇ ʏᴏᴜʀ ᴇɴᴇʀɢʏ"
+    - "&9ᴛʜᴇɴ ʀᴇʟᴇᴀsᴇ ɪᴛ ᴜᴘᴏɴ ʏᴏᴜʀ ᴇɴᴇᴍɪᴇs"
+  Enchantments:
+    unbreaking: 10

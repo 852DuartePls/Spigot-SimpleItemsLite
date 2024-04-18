@@ -1,0 +1,9 @@
+# Configuración del RainbowBridge para el plugin SimpleItemsLite
+RainbowBridgeItem:
+  Material: STICK
+  DisplayName: "&c>&6> &aʀ&3ᴀ&9ɪ&5ɴ&cʙ&6ᴏ&eᴡ &3ɪ&9ᴛ&5ᴇ&cᴍ &e<&a<"
+  Lore:
+    - "&cᴄ&6ʀ&eᴇ&aᴀ&3ᴛ&9ᴇ &cʙ&6ʀ&eɪ&aᴅ&3ɢ&9ᴇ&5s"
+    - "&cʙ&6ʏ &aʀ&3ɪ&9ɢ&5ʜ&cᴛ &eᴄ&aʟ&3ɪ&9ᴄ&5ᴋ&cɪ&6ɴ&eɢ"
+  Enchantments:
+    efficiency: 5

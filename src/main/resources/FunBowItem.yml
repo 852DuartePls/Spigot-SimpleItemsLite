@@ -1,0 +1,9 @@
+# FunBow configuration:
+FunBowItem:
+  DisplayName: "&b&k!!!&3FunBow&b&k!!!"
+  Lore:
+    - "&c▪ ᴅᴀɴɢᴇʀᴏᴜs "
+    - "&c▪ ᴀɴᴅ ғᴜɴ"
+  Enchantments:
+    unbreaking: 10
+    infinity: 5

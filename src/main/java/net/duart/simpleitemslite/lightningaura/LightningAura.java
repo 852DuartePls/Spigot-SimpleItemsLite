@@ -1,0 +1,309 @@
+package net.duart.simpleitemslite.lightningaura;
+
+import org.bukkit.*;
+import org.bukkit.block.Block;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
+import org.bukkit.entity.*;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class LightningAura implements Listener {
+    private final JavaPlugin plugin;
+    private final LightningItemListener lightningItemListener;
+    private final Map<Player, Long> chargingPlayers;
+    private final Map<Player, Boolean> chargedPlayers;
+    private final BossBar chargingBar;
+    private final BossBar cooldownBar;
+    private final BossBar thirdCooldownBar;
+    private BukkitRunnable cooldownTask;
+    private BukkitRunnable damageTask;
+    private boolean isThirdCooldownActive = false;
+
+
+    public LightningAura(JavaPlugin plugin, LightningItemListener lightningItemListener) {
+        this.plugin = plugin;
+        this.lightningItemListener = lightningItemListener;
+        this.chargingPlayers = new HashMap<>();
+        this.chargedPlayers = new HashMap<>();
+        this.chargingBar = Bukkit.createBossBar(ChatColor.YELLOW + "⚡ Charging lightning aura... ⚡", BarColor.YELLOW, BarStyle.SOLID);
+        this.cooldownBar = Bukkit.createBossBar(ChatColor.RED + "⚡ Charge ⚡", BarColor.RED, BarStyle.SOLID);
+        this.thirdCooldownBar = Bukkit.createBossBar(ChatColor.GOLD + "⚡ Cooldown ⚡", BarColor.YELLOW, BarStyle.SEGMENTED_10);
+        plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
+    @EventHandler
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack itemInHand = player.getInventory().getItemInMainHand();
+            if (itemInHand.isSimilar(lightningItemListener.getLightningItem())) {
+                if (lightningItemListener.playerHasLightningItem(player)) {
+                    if (!isOnCooldown()) {
+                        startCharging(player);
+                    } else {
+                        event.setCancelled(true);
+                    }
+                }
+            }
+        } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            if (chargedPlayers.containsKey(player)) {
+                shootLightning(player);
+            }
+        }
+    }
+
+    private boolean isOnCooldown() {
+        return isThirdCooldownActive;
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+        Player player = event.getPlayer();
+        Location playerLocation = player.getLocation();
+
+        for (int xOffset = -1; xOffset <= 1; xOffset++) {
+            for (int zOffset = -1; zOffset <= 1; zOffset++) {
+                Location blockLocation = playerLocation.clone().add(xOffset, -1, zOffset);
+                Block blockBelowPlayer = blockLocation.getBlock();
+
+                if (chargedPlayers.containsKey(player) && blockBelowPlayer.getType() == Material.WATER) {
+                    blockBelowPlayer.setType(Material.BARRIER);
+                    replaceBlockAfterDelay(blockBelowPlayer);
+                }
+            }
+        }
+    }
+
+    private void replaceBlockAfterDelay(Block block) {
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            if (block.getType() == Material.BARRIER) {
+                block.setType(Material.WATER);
+            }
+        }, 20L);
+    }
+
+    private void startCharging(Player player) {
+        if (!chargingPlayers.containsKey(player)) {
+            chargingPlayers.put(player, System.currentTimeMillis());
+            chargingBar.addPlayer(player);
+            startChargingBar(player);
+            Bukkit.getScheduler().runTaskLater(plugin, () -> applyChargedEffect(player), 100L);
+        }
+    }
+
+    private void applyChargedEffect(Player player) {
+        if (chargingPlayers.containsKey(player)) {
+            long startTime = chargingPlayers.get(player);
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - startTime >= 5000) {
+                chargedPlayers.put(player, true);
+                player.playSound(player.getLocation(), Sound.ENTITY_GUARDIAN_DEATH, SoundCategory.MASTER, 1.0f, 0.3f);
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100 * 20, 2));
+                player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 100 * 20, 2));
+                damageTask = new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        for (Entity entity : player.getNearbyEntities(3, 3, 3)) {
+                            if (entity instanceof LivingEntity && entity.getType() != EntityType.PLAYER && ((LivingEntity) entity).getHealth() > 0) {
+                                if (entity.getLocation().distanceSquared(player.getLocation()) <= 9) {
+                                    LivingEntity livingEntity = (LivingEntity) entity;
+                                    if (!livingEntity.isCustomNameVisible()) {
+                                        if (livingEntity.getCustomName() == null || livingEntity.getCustomName().isEmpty()) {
+                                            if (livingEntity instanceof Monster && !(livingEntity instanceof Animals) && !(livingEntity instanceof ZombieVillager)) {
+                                                livingEntity.damage(5);
+                                                entity.getWorld().spawnParticle(Particle.CRIT, entity.getLocation().add(0, 1, 0), 10, 0.5, 0.5, 0.5, 0);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }; damageTask.runTaskTimer(plugin, 0, 20);
+                spawnChargedParticles(player);
+            } else {
+                Bukkit.getScheduler().runTaskLater(plugin, () -> applyChargedEffect(player), 20L);
+            }
+        }
+    }
+
+    private void spawnChargedParticles(Player player) {
+        new BukkitRunnable() {
+            double angle = 0;
+
+            @Override
+            public void run() {
+                if (!chargedPlayers.containsKey(player)) {
+                    this.cancel();
+                    return;
+                }
+
+                for (double i = 0; i < Math.PI * 2; i += Math.PI / 4) {
+
+                    double x = player.getLocation().getX() + Math.cos(angle + i) * 1.5;
+                    double y = player.getLocation().getY() + 1;
+                    double z = player.getLocation().getZ() + Math.sin(angle + i) * 1.5;
+
+                    player.getWorld().spawnParticle(Particle.REDSTONE, new Location(player.getWorld(), x, y, z), 1, 0, 0, 0, 1, new Particle.DustOptions(Color.YELLOW, 1));
+
+                    double xUpper = player.getLocation().getX() + Math.cos(angle + i);
+                    double yUpper = player.getLocation().getY() + 1.5;
+                    double zUpper = player.getLocation().getZ() + Math.sin(angle + i);
+
+                    player.getWorld().spawnParticle(Particle.REDSTONE, new Location(player.getWorld(), xUpper, yUpper, zUpper), 1, 0, 0, 0, 1, new Particle.DustOptions(Color.YELLOW, 1));
+
+                    double xLower = player.getLocation().getX() + Math.cos(angle + i);
+                    double yLower = player.getLocation().getY() + 0.5;
+                    double zLower = player.getLocation().getZ() + Math.sin(angle + i);
+
+                    player.getWorld().spawnParticle(Particle.REDSTONE, new Location(player.getWorld(), xLower, yLower, zLower), 1, 0, 0, 0, 1, new Particle.DustOptions(Color.YELLOW, 1));
+                }
+
+                angle += Math.PI / 8;
+
+                if (angle >= Math.PI * 2) {
+                    angle = 0;
+                }
+            }
+        }.runTaskTimer(plugin, 0, 5);
+    }
+
+
+    private void shootLightning(Player player) {
+        Location playerLocation = player.getLocation();
+        List<Entity> nearbyEntities = player.getNearbyEntities(20, 20, 20);
+        int entitiesHit = 0;
+        boolean lightningStruck = false;
+
+        for (Entity entity : nearbyEntities) {
+            if ((entity instanceof Monster || entity instanceof Player) && hasCustomNameTag(entity) && !(entity instanceof ZombieVillager)) {
+                if (entity.getLocation().distance(playerLocation) <= 20) {
+                    entity.getWorld().strikeLightningEffect(entity.getLocation());
+                    entitiesHit++;
+
+                    LivingEntity livingEntity = (LivingEntity) entity;
+                    double damageAmount = 21f;
+                    livingEntity.damage(damageAmount, player);
+
+                    lightningStruck = true;
+
+                    if (entitiesHit >= 5) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (lightningStruck && cooldownTask != null) {
+            cooldownTask.cancel();
+            cooldownBar.setProgress(0.0);
+            cooldownBar.removePlayer(player);
+            startThirdCooldownBar(player);
+            endCharging(player);
+        }
+    }
+
+    private boolean hasCustomNameTag(Entity entity) {
+        return entity.getCustomName() == null || entity.getCustomName().isEmpty();
+    }
+
+    private void endCharging(Player player) {
+        chargingPlayers.remove(player);
+        chargedPlayers.remove(player);
+        player.removePotionEffect(PotionEffectType.SPEED);
+        player.removePotionEffect(PotionEffectType.JUMP);
+        player.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, SoundCategory.MASTER, 0.2f, 0.8f);
+
+        if (damageTask != null) {
+            damageTask.cancel();
+        }
+    }
+
+    private void startChargingBar(Player player) {
+        new BukkitRunnable() {
+            int chargingTicks = 0;
+
+            @Override
+            public void run() {
+                double chargingProgress = Math.min(1.0, (double) chargingTicks / 120);
+
+                chargingBar.setProgress(chargingProgress);
+
+                if (chargingTicks >= 120) {
+                    chargingBar.setProgress(1.0);
+                    chargingBar.removePlayer(player);
+                    cooldownBar.addPlayer(player);
+                    startCooldownBar(player);
+                    this.cancel();
+                }
+
+                chargingTicks++;
+            }
+        }.runTaskTimer(plugin, 0, 1);
+    }
+
+    private void startCooldownBar(Player player) {
+        cooldownTask = new BukkitRunnable() {
+            int cooldownTicks = 200;
+
+            @Override
+            public void run() {
+                double cooldownProgress = Math.max(0.0, (double) cooldownTicks / 200);
+
+                cooldownBar.setProgress(cooldownProgress);
+
+                if (cooldownTicks <= 0) {
+                    cooldownBar.setProgress(0.0);
+                    cooldownBar.removePlayer(player);
+                    this.cancel();
+                    endCharging(player);
+                    startThirdCooldownBar(player);
+                    return;
+                }
+                cooldownTicks--;
+            }
+        };
+        cooldownTask.runTaskTimer(plugin, 0, 1);
+    }
+
+    private void startThirdCooldownBar(Player player) {
+        isThirdCooldownActive = true;
+        thirdCooldownBar.addPlayer(player);
+        thirdCooldownBar.setProgress(1.0);
+
+        BukkitRunnable thirdCooldownTask = new BukkitRunnable() {
+            int cooldownTicks = 10 * 20;
+
+            @Override
+            public void run() {
+                double cooldownProgress = Math.max(0.0, (double) cooldownTicks / (10 * 20));
+
+                thirdCooldownBar.setProgress(cooldownProgress);
+
+                if (cooldownTicks <= 0) {
+                    thirdCooldownBar.setProgress(0.0);
+                    thirdCooldownBar.removePlayer(player);
+                    isThirdCooldownActive = false;
+                    this.cancel();
+                    return;
+                }
+                cooldownTicks--;
+            }
+        };
+        thirdCooldownTask.runTaskTimer(plugin, 0, 1);
+    }
+}

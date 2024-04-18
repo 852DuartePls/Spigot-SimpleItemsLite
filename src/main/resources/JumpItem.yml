@@ -1,0 +1,10 @@
+# JumpItem configuration:
+JumpItem:
+  Material: FEATHER
+  DisplayName: "&e&k!!! &6&lJump Feather &e&k!!!"
+  Lore:
+    - "&e▪ ᴋᴇᴇᴘ ᴛʜɪs ɪᴛᴇᴍ ɪɴ ʏᴏᴜʀ"
+    - "&e▪ ɪɴᴠᴇɴᴛᴏʀʏ ᴛᴏ ᴏʙᴛᴀɪɴ ᴀ"
+    - "&e▪ ᴅᴏᴜʙʟᴇ ᴊᴜᴍᴘ"
+  Enchantments:
+    unbreaking: 10

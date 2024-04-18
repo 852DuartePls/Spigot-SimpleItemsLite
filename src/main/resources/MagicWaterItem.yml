@@ -1,0 +1,9 @@
+# MagicWater configuration:
+MagicWaterItem:
+  DisplayName: "&3Infinite Water Bucket"
+  Lore:
+    - "&e▪ This bucket of"
+    - "&e▪ water is really"
+    - "&e▪ infinite"
+  Enchantments:
+    unbreaking: 10
