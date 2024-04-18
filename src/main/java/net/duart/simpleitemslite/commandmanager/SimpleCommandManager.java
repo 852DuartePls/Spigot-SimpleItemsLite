@@ -32,7 +32,12 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.RED + "This command can only be executed by a player.");
             return true;
         }
+        Player player = (Player) sender;
 
+        if (!player.hasPermission("simpleitemslite.use")) {
+            sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
+            return true;
+        }
 
         if (args.length < 1) {
             sender.sendMessage(ChatColor.RED + "Correct usage: /simpleitemslite give (item)");
@@ -45,7 +50,6 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
                 return true;
             }
 
-            Player player = (Player) sender;
             String itemName = args[1].toLowerCase();
 
             File dataFolder = plugin.getDataFolder();
