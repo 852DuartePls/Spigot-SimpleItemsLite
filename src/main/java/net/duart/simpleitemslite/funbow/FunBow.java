@@ -102,31 +102,34 @@ public class FunBow implements Listener {
     @EventHandler
     public void onEntityShootBow(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
+        ItemStack bow = player.getInventory().getItemInMainHand();
+
+        if (!bow.isSimilar(funBowItemListener.getFunBowItem())) return;
 
         if (selectedEntityType != null) {
-                String entityTag = selectedEntityType.toString();
-                int maxEntities = 10;
-                int radius = 160;
+            String entityTag = selectedEntityType.toString();
+            int maxEntities = 10;
+            int radius = 160;
 
-                Location shootLocation = event.getProjectile().getLocation();
-                int count = 0;
+            Location shootLocation = event.getProjectile().getLocation();
+            int count = 0;
 
-                for (Entity entity : Objects.requireNonNull(shootLocation.getWorld()).getNearbyEntities(shootLocation, radius, radius, radius)) {
-                    if (entity.getType() == selectedEntityType && entity.getPersistentDataContainer().has(new NamespacedKey(plugin, "entityTag"), PersistentDataType.STRING)) {
-                        String tag = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "entityTag"), PersistentDataType.STRING);
-                        if (entityTag.equals(tag)) {
-                            count++;
-                        }
+            for (Entity entity : Objects.requireNonNull(shootLocation.getWorld()).getNearbyEntities(shootLocation, radius, radius, radius)) {
+                if (entity.getType() == selectedEntityType && entity.getPersistentDataContainer().has(new NamespacedKey(plugin, "entityTag"), PersistentDataType.STRING)) {
+                    String tag = entity.getPersistentDataContainer().get(new NamespacedKey(plugin, "entityTag"), PersistentDataType.STRING);
+                    if (entityTag.equals(tag)) {
+                        count++;
                     }
                 }
+            }
 
-                if (count < maxEntities) {
-                    Entity entity = player.getWorld().spawnEntity(shootLocation, selectedEntityType);
-                    entity.setVelocity(event.getProjectile().getVelocity());
-                    entity.getPersistentDataContainer().set(new NamespacedKey(plugin, "entityTag"), PersistentDataType.STRING, entityTag); // Asignar el tag único a la entidad
-                } else {
-                    player.sendMessage(ChatColor.RED + "§c◆ Too many §2" + selectedEntityType.toString() + " §centities in this area.");
-                }
+            if (count < maxEntities) {
+                Entity entity = player.getWorld().spawnEntity(shootLocation, selectedEntityType);
+                entity.setVelocity(event.getProjectile().getVelocity());
+                entity.getPersistentDataContainer().set(new NamespacedKey(plugin, "entityTag"), PersistentDataType.STRING, entityTag); // Asignar el tag único a la entidad
+            } else {
+                player.sendMessage(ChatColor.RED + "§c◆ Too many §2" + selectedEntityType.toString() + " §centities in this area.");
+            }
         }
         event.setCancelled(true);
     }

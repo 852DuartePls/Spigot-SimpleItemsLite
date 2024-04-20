@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3419dcbe-c7ec-4bda-9416-c253dfc95c81" name="Changes" comment="added permission">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+    <list default="true" id="3419dcbe-c7ec-4bda-9416-c253dfc95c81" name="Changes" comment="Ver. 1.0.1">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +86,7 @@
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Duarte/Desktop/Documentos - David/Documentos - David/Mods/MCTB/SimpleItemsLite - Upload Ver&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Duarte/Desktop/Documentos - David/Documentos - David/Mods/MCTB/SimpleItemsLite&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.4091954&quot;,
@@ -240,7 +236,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713481271622</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Ver. 1.0.1">
+      <option name="closed" value="true" />
+      <created>1713575949374</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1713575949374</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -256,6 +260,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="added permission" />
-    <option name="LAST_COMMIT_MESSAGE" value="added permission" />
+    <MESSAGE value="Ver. 1.0.1" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ver. 1.0.1" />
   </component>
 </project>
