@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3419dcbe-c7ec-4bda-9416-c253dfc95c81" name="Changes" comment="" />
+    <list default="true" id="3419dcbe-c7ec-4bda-9416-c253dfc95c81" name="Changes" comment="added permission">
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -26,23 +32,7 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="SimpleItemsLite" type="f1a62948:ProjectNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="SimpleItemsLite" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-              </path>
-              <path>
-                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
-                <item name="SimpleItemsLite" type="f1a62948:ProjectNode" />
-                <item name="Tasks" type="e4a08cd1:TasksNode" />
-                <item name="build" type="c8890929:TasksNode$1" />
-              </path>
-            </expand>
+            <expand />
             <select />
           </tree_state>
         </projects_view>
@@ -56,6 +46,21 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;852DuartePls&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/852DuartePls/Spigot-SimpleItemsLite.git&quot;,
+    &quot;accountId&quot;: &quot;3e54a04b-3b7d-45ca-962c-21eceb419905&quot;
+  }
+}</component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="DEPENDENCY_CHECKER_PROBLEMS_TAB" />
   </component>
@@ -64,6 +69,7 @@
   &quot;associatedIndex&quot;: 3
 }</component>
   <component name="ProjectId" id="2dqH54MdHw2wLsWhCP3L7F2M7Xd" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
@@ -80,9 +86,11 @@
     &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Duarte/Desktop/Documentos - David/Documentos - David/Mods/MCTB/SimpleItemsLite&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Duarte/Desktop/Documentos - David/Documentos - David/Mods/MCTB/SimpleItemsLite - Upload Ver&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.4091954&quot;,
@@ -216,6 +224,38 @@
       <option name="presentableId" value="Default" />
       <updated>1710728503356</updated>
     </task>
+    <task id="LOCAL-00001" summary="added permission">
+      <option name="closed" value="true" />
+      <created>1713481200021</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1713481200021</updated>
+    </task>
+    <task id="LOCAL-00002" summary="added permission">
+      <option name="closed" value="true" />
+      <created>1713481271622</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1713481271622</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="added permission" />
+    <option name="LAST_COMMIT_MESSAGE" value="added permission" />
   </component>
 </project>

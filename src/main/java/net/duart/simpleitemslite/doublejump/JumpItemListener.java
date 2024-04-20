@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class JumpItemListener implements Listener {
     private final JavaPlugin plugin;
     private ItemStack jumpItem;
-    private boolean jumpItemWarningSent;
 
     public JumpItemListener(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -38,19 +37,6 @@ public class JumpItemListener implements Listener {
             if (item != null && item.isSimilar(jumpItem)) {
                 hasJumpItem = true;
                 break;
-            }
-        }
-
-        if (!hasJumpItem) {
-            if (!jumpItemWarningSent) {
-                jumpItemWarningSent = true;
-            }
-            player.setFlying(false);
-            player.setAllowFlight(false);
-        } else {
-            if (jumpItemWarningSent) {
-                player.sendMessage(ChatColor.GREEN + "¡Doble Salto activado!");
-                jumpItemWarningSent = false;
             }
         }
 

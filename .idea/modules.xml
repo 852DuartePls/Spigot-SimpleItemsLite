@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/SimpleItemsLite - Upload Ver.SimpleItemsLite.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SimpleItemsLite - Upload Ver.SimpleItemsLite.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/SimpleItemsLite.main.iml" filepath="$PROJECT_DIR$/.idea/modules/SimpleItemsLite.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/net.duart.SimpleItemsLite.main.iml" filepath="$PROJECT_DIR$/.idea/modules/net.duart.SimpleItemsLite.main.iml" />
     </modules>
