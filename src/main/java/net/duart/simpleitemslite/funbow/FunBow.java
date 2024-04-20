@@ -103,7 +103,6 @@ public class FunBow implements Listener {
     public void onEntityShootBow(EntityShootBowEvent event) {
         if (!(event.getEntity() instanceof Player player)) return;
         ItemStack bow = player.getInventory().getItemInMainHand();
-
         if (!bow.isSimilar(funBowItemListener.getFunBowItem())) return;
 
         if (selectedEntityType != null) {
