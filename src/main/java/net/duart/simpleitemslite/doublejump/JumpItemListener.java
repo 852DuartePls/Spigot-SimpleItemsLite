@@ -39,7 +39,6 @@ public class JumpItemListener implements Listener {
                 break;
             }
         }
-
         return hasJumpItem;
     }
 

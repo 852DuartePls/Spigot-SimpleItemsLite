@@ -22,7 +22,6 @@ import java.util.stream.Collectors;
 public class LightningItemListener implements Listener {
     private final JavaPlugin plugin;
     private ItemStack LightningItem;
-    private boolean LightningItemWarningSent;
 
     public LightningItemListener(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -42,18 +41,6 @@ public class LightningItemListener implements Listener {
             if (item != null && item.isSimilar(LightningItem)) {
                 hasLightningItem = true;
                 break;
-            }
-        }
-
-        if (!hasLightningItem) {
-            if (!LightningItemWarningSent) {
-                LightningItemWarningSent = true;
-            }
-            player.setFlying(false);
-            player.setAllowFlight(false);
-        } else {
-            if (LightningItemWarningSent) {
-                LightningItemWarningSent = false;
             }
         }
 

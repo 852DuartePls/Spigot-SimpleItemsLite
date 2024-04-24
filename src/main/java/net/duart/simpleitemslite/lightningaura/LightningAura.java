@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -73,14 +74,20 @@ public class LightningAura implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        Location playerLocation = player.getLocation();
+        Block playerBlock = player.getLocation().getBlock();
 
         for (int xOffset = -1; xOffset <= 1; xOffset++) {
             for (int zOffset = -1; zOffset <= 1; zOffset++) {
-                Location blockLocation = playerLocation.clone().add(xOffset, -1, zOffset);
-                Block blockBelowPlayer = blockLocation.getBlock();
+                Block blockBelowPlayer = playerBlock.getRelative(xOffset, -1, zOffset);
 
                 if (chargedPlayers.containsKey(player) && blockBelowPlayer.getType() == Material.WATER) {
+                    boolean isSource = blockBelowPlayer.getBlockData() instanceof org.bukkit.block.data.Levelled && ((org.bukkit.block.data.Levelled) blockBelowPlayer.getBlockData()).getLevel() == 0;
+
+                    if (isSource) {
+                        blockBelowPlayer.setMetadata("isWaterSource", new FixedMetadataValue(plugin, true));
+                    } else {
+                        blockBelowPlayer.setMetadata("isNotWaterSource",new FixedMetadataValue(plugin, true));
+                    }
                     blockBelowPlayer.setType(Material.BARRIER);
                     replaceBlockAfterDelay(blockBelowPlayer);
                 }
@@ -89,9 +96,15 @@ public class LightningAura implements Listener {
     }
 
     private void replaceBlockAfterDelay(Block block) {
-        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+        plugin.getServer().getScheduler().runTaskLater(plugin, () -> {
             if (block.getType() == Material.BARRIER) {
-                block.setType(Material.WATER);
+                if (block.hasMetadata("isWaterSource") && block.getMetadata("isWaterSource").get(0).asBoolean()) {
+                    block.setType(Material.WATER);
+                } else {
+                    if (block.hasMetadata("isNotWaterSource") && block.getMetadata("isNotWaterSource").get(0).asBoolean()){
+                        block.setType(Material.AIR);
+                    }
+                }
             }
         }, 20L);
     }
@@ -111,6 +124,18 @@ public class LightningAura implements Listener {
             long currentTime = System.currentTimeMillis();
             if (currentTime - startTime >= 5000) {
                 chargedPlayers.put(player, true);
+                for (Entity entity : player.getNearbyEntities(20, 20, 20)) {
+                    if (entity instanceof Player nearbyPlayer) {
+                        Location playerLoc = player.getLocation();
+                        Location nearbyLoc = nearbyPlayer.getLocation();
+                        double distance = playerLoc.distance(nearbyLoc);
+
+                        float volume = (float) (1.0 - (distance / 20.0));
+                        float pitch =0.3f;
+
+                        nearbyPlayer.playSound(nearbyLoc, Sound.ENTITY_GUARDIAN_DEATH, volume, pitch);
+                    }
+                }
                 player.playSound(player.getLocation(), Sound.ENTITY_GUARDIAN_DEATH, SoundCategory.MASTER, 1.0f, 0.3f);
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100 * 20, 2));
                 player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 100 * 20, 2));
@@ -227,6 +252,18 @@ public class LightningAura implements Listener {
         player.removePotionEffect(PotionEffectType.SPEED);
         player.removePotionEffect(PotionEffectType.JUMP);
         player.playSound(player.getLocation(), Sound.ENTITY_ELDER_GUARDIAN_CURSE, SoundCategory.MASTER, 0.2f, 0.8f);
+        for (Entity entity : player.getNearbyEntities(20, 20, 20)) {
+            if (entity instanceof Player nearbyPlayer) {
+                Location playerLoc = player.getLocation();
+                Location nearbyLoc = nearbyPlayer.getLocation();
+                double distance = playerLoc.distance(nearbyLoc);
+
+                float volume = (float) (0.5 - (distance / 20.0));
+                float pitch = 0.8f;
+
+                nearbyPlayer.playSound(nearbyLoc, Sound.ENTITY_ELDER_GUARDIAN_CURSE, volume, pitch);
+            }
+        }
 
         if (damageTask != null) {
             damageTask.cancel();

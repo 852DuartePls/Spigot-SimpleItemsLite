@@ -5,6 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -67,6 +68,18 @@ public class RainbowBridge implements Listener {
         event.setCancelled(true);
         startRainbowBridge(player);
         player.playSound(player.getLocation(), Sound.BLOCK_AMETHYST_BLOCK_HIT, 1.0f, 1.0f);
+        for (Entity entity : player.getNearbyEntities(20, 20, 20)) {
+            if (entity instanceof Player nearbyPlayer) {
+                Location playerLoc = player.getLocation();
+                Location nearbyLoc = nearbyPlayer.getLocation();
+                double distance = playerLoc.distance(nearbyLoc);
+
+                float volume = (float) (1.0 - (distance / 20.0));
+                float pitch = 1.0f;
+
+                nearbyPlayer.playSound(nearbyLoc, Sound.BLOCK_AMETHYST_BLOCK_HIT, volume, pitch);
+            }
+        }
     }
 
     private boolean isOnCooldown(Player player) {

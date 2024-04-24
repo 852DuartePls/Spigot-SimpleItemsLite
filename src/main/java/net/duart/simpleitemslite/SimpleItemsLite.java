@@ -11,19 +11,21 @@ import net.duart.simpleitemslite.lightningaura.LightningAura;
 import net.duart.simpleitemslite.lightningaura.LightningItemListener;
 import net.duart.simpleitemslite.rainbowbridge.RainbowBridge;
 import net.duart.simpleitemslite.rainbowbridge.RainbowItemListener;
+import net.duart.simpleitemslite.voidbucket.VoidBucket;
+import net.duart.simpleitemslite.voidbucket.VoidBucketItemListener;
 import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class SimpleItemsLite extends JavaPlugin {
+    public static HashMap<UUID, Integer> usesCounter = new HashMap<>();
 
     @Override
     public void onEnable() {
         getLogger().info("SimpleItemsLite was Enabled!");
+
         List<String> fileNames = Arrays.asList("JumpItem.yml", "RainbowBridgeItem.yml",
-                "LightningItem.yml", "MagicWaterItem.yml", "FunBowItem.yml");
+                "LightningItem.yml", "MagicWaterItem.yml", "FunBowItem.yml", "VoidBucketItem.yml");
 
         for (String fileName : fileNames) {
             File file = new File(getDataFolder(), fileName);
@@ -43,6 +45,8 @@ public class SimpleItemsLite extends JavaPlugin {
         MagicWater magicWater = new MagicWater(this, magicWaterItemListener);
         FunBowItemListener funBowItemListener = new FunBowItemListener(this);
         FunBow funBow = new FunBow(this, funBowItemListener);
+        VoidBucketItemListener voidBucketItemListener = new VoidBucketItemListener(this);
+        VoidBucket voidBucket = new VoidBucket(this, voidBucketItemListener);
 
         getServer().getPluginManager().registerEvents(rainbowItemListener, this);
         getServer().getPluginManager().registerEvents(rainbowBridge, this);
@@ -54,13 +58,15 @@ public class SimpleItemsLite extends JavaPlugin {
         getServer().getPluginManager().registerEvents(magicWater, this);
         getServer().getPluginManager().registerEvents(funBowItemListener, this);
         getServer().getPluginManager().registerEvents(funBow, this);
+        getServer().getPluginManager().registerEvents(voidBucketItemListener, this);
+        getServer().getPluginManager().registerEvents(voidBucket, this);
         Objects.requireNonNull(getCommand("simpleitemslite")).setExecutor(commandManager);
         Objects.requireNonNull(getCommand("simpleitemslite")).setTabCompleter(commandManager);
-
     }
 
     @Override
     public void onDisable() {
         getLogger().info("SimpleItemsLite was disabled!");
+        usesCounter.clear();
     }
 }

@@ -1,6 +1,7 @@
 package net.duart.simpleitemslite.doublejump;
 
 import org.bukkit.*;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -52,6 +53,18 @@ public class DoubleJump implements Listener {
                         player.setVelocity(player.getLocation().getDirection().multiply(1.5).setY(1));
 
                         lastJumpTime = System.currentTimeMillis();
+                        for (Entity entity : player.getNearbyEntities(20, 20, 20)) {
+                            if (entity instanceof Player nearbyPlayer) {
+                                Location playerLoc = player.getLocation();
+                                Location nearbyLoc = nearbyPlayer.getLocation();
+                                double distance = playerLoc.distance(nearbyLoc);
+
+                                float volume = (float) (1.0 - (distance / 20.0));
+                                float pitch = 1.0f;
+
+                                nearbyPlayer.playSound(nearbyLoc, Sound.ENTITY_ENDER_DRAGON_FLAP, volume, pitch);
+                            }
+                        }
                         player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1.0f, 1.0f);
                         player.getWorld().spawnParticle(Particle.REDSTONE, player.getLocation().add(0, -0.5, 0), 30, 0.5, 0.5, 0.5, 1.0, new Particle.DustOptions(Color.WHITE, 3));
 
