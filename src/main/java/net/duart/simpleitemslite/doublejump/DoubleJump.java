@@ -39,12 +39,7 @@ public class DoubleJump implements Listener {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastJumpTime >= cooldownTimeSeconds * 1000) {
                 player.setAllowFlight(true);
-                event.getPlayer().getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                    if (player.isOnline() && player.isFlying()) {
-                        player.setAllowFlight(false);
-                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6[&eSimpleItemsLite&6] &cYou have lost your JumpItem!"));
-                    }
-                }, 20L);
+                event.getPlayer().getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> player.setAllowFlight(false), 20L);
             }
         }
     }
