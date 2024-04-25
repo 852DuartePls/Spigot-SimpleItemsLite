@@ -4,17 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3419dcbe-c7ec-4bda-9416-c253dfc95c81" name="Changes" comment="- Fixed improper usage of onEntityShootBow method&#10;  - Updated onEntityShootBow method in FunBow class to ensure it only processes shoots from FunBowItems, preventing unintended behavior.">
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucket.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucketItemListener.java" afterDir="false" />
+    <list default="true" id="3419dcbe-c7ec-4bda-9416-c253dfc95c81" name="Changes" comment="- Version 1.1.0">
+      <change afterPath="$PROJECT_DIR$/src/main/resources/VoidBucketItem.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/SimpleItemsLite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/SimpleItemsLite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/commandmanager/SimpleCommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/commandmanager/SimpleCommandManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/DoubleJump.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/DoubleJump.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningAura.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningAura.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningItemListener.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowBridge.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +89,7 @@
     "git-widget-placeholder": "master",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Duarte/Desktop/Documentos - David/Documentos - David/Mods/MCTB/SimpleItemsLite - Upload Ver/src/main/java/net/duart/simpleitemslite/voidbucket",
+    "last_opened_file_path": "C:/Users/Duarte/Desktop/Documentos - David/Documentos - David/Mods/MCTB/SimpleItemsLite - Upload Ver/src/main/resources",
     "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.0",
     "project.structure.side.proportion": "0.4091954",
@@ -109,6 +103,7 @@
       <recent name="net.duart.simpleitemslite.events" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Duarte\Desktop\Documentos - David\Documentos - David\Mods\MCTB\SimpleItemsLite - Upload Ver\src\main\resources" />
       <recent name="C:\Users\Duarte\Desktop\Documentos - David\Documentos - David\Mods\MCTB\SimpleItemsLite - Upload Ver\src\main\java\net\duart\simpleitemslite\voidbucket" />
       <recent name="C:\Users\Duarte\Desktop\Documentos - David\Documentos - David\Mods\MCTB\SimpleItemsLite - Upload Ver\src\main\java\net\duart\simpleitemslite" />
     </key>
@@ -273,7 +268,15 @@
       <option name="project" value="LOCAL" />
       <updated>1713654440078</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="- Version 1.1.0">
+      <option name="closed" value="true" />
+      <created>1713927021742</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1713927021742</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -291,6 +294,7 @@
     <MESSAGE value="added permission" />
     <MESSAGE value="Ver. 1.0.1" />
     <MESSAGE value="- Fixed improper usage of onEntityShootBow method&#10;  - Updated onEntityShootBow method in FunBow class to ensure it only processes shoots from FunBowItems, preventing unintended behavior." />
-    <option name="LAST_COMMIT_MESSAGE" value="- Fixed improper usage of onEntityShootBow method&#10;  - Updated onEntityShootBow method in FunBow class to ensure it only processes shoots from FunBowItems, preventing unintended behavior." />
+    <MESSAGE value="- Version 1.1.0" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Version 1.1.0" />
   </component>
 </project>

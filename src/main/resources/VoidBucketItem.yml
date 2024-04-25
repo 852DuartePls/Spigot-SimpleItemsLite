@@ -1,0 +1,9 @@
+# VoidBucket configuration:
+VoidBucketItem:
+  DisplayName: "&3_Void Bucket_"
+  Lore:
+    - "&c▪ This bucket"
+    - "&c▪ never gets filled"
+  Enchantments:
+    unbreaking: 10
+    infinity: 5

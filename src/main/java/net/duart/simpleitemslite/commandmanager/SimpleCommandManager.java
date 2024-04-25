@@ -104,6 +104,8 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
             material = Material.WATER_BUCKET;
         } else if (itemName.equalsIgnoreCase("FunBowItem")) {
             material = Material.BOW;
+        } else if (itemName.equalsIgnoreCase("VoidBucketItem")) {
+            material = Material.BUCKET;
         } else {
             String materialName = config.getString(itemName + ".Material");
             assert materialName != null;

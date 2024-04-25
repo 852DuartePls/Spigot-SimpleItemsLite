@@ -21,12 +21,14 @@ public class DoubleJump implements Listener {
     private long lastJumpTime = 0;
     private final BossBar jumpCooldownBar;
     private final CooldownManager cooldownManager;
+    private final JavaPlugin plugin;
 
     public DoubleJump(JavaPlugin plugin, JumpItemListener jumpItemListener) {
         this.jumpItemListener = jumpItemListener;
         this.jumpCooldownBar = Bukkit.createBossBar("§aDouble Jump", BarColor.GREEN, BarStyle.SEGMENTED_6);
         this.jumpCooldownBar.setVisible(false);
         this.cooldownManager = new CooldownManager(plugin);
+        this.plugin = plugin;
         Bukkit.getPluginManager().registerEvents(this, plugin);
     }
 
@@ -34,8 +36,15 @@ public class DoubleJump implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
         if (player.getGameMode() == GameMode.SURVIVAL && jumpItemListener.playerHasJumpItem(player)) {
-            if (System.currentTimeMillis() - lastJumpTime >= cooldownTimeSeconds * 1000) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastJumpTime >= cooldownTimeSeconds * 1000) {
                 player.setAllowFlight(true);
+                event.getPlayer().getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    if (player.isOnline() && player.isFlying()) {
+                        player.setAllowFlight(false);
+                        player.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6[&eSimpleItemsLite&6] &cYou have lost your JumpItem!"));
+                    }
+                }, 20L);
             }
         }
     }
