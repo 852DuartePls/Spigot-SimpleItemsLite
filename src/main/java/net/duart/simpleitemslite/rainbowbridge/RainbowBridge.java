@@ -3,6 +3,7 @@ package net.duart.simpleitemslite.rainbowbridge;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Levelled;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Entity;
@@ -11,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockBurnEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -18,15 +21,18 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.boss.BossBar;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
 public class RainbowBridge implements Listener {
     private final JavaPlugin plugin;
     private final RainbowItemListener rainbowItemListener;
-    private final int bridgeDurationTicks = 7 * 20;
+    private final int bridgeDurationTicks = 8 * 20;
     private final int cooldownTicks = 20 * 20;
     private final BossBar rainbowCooldownBar;
+    private final Map<Location, Material> originalBlocks = new HashMap<>();
+
 
     private boolean isBuildingBridge(Player player) {
         return player.hasMetadata("buildingBridge");
@@ -87,7 +93,6 @@ public class RainbowBridge implements Listener {
 
     }
 
-
     private void startRainbowBridge(Player player) {
         LinkedList<Map.Entry<Location, BlockData>> blockList = new LinkedList<>();
 
@@ -124,6 +129,8 @@ public class RainbowBridge implements Listener {
     private void markAsIndestructible(Block block) {
         if (block != null && !block.hasMetadata("indestructible")) {
             block.setMetadata("indestructible", new FixedMetadataValue(plugin, true));
+            block.setMetadata("fireproof", new FixedMetadataValue(plugin, true)); // Mark as fireproof
+            block.setMetadata("explosion-resistant", new FixedMetadataValue(plugin, true)); // Mark as explosion-resistant
         }
     }
 
@@ -135,6 +142,24 @@ public class RainbowBridge implements Listener {
             if (block.hasMetadata("indestructible")) {
                 event.setCancelled(true);
             }
+        }
+    }
+
+    @EventHandler
+    public void onBlockExplode(BlockExplodeEvent event) {
+        for (Block block : event.blockList()) {
+            if (block.hasMetadata("indestructible") || block.hasMetadata("explosion-resistant")) {
+                event.setCancelled(true);
+                break;
+            }
+        }
+    }
+
+    @EventHandler
+    public void onBlockBurn(BlockBurnEvent event) {
+        Block block = event.getBlock();
+        if (block.hasMetadata("indestructible") || block.hasMetadata("fireproof")) {
+            event.setCancelled(true);
         }
     }
 
@@ -156,17 +181,44 @@ public class RainbowBridge implements Listener {
     }
 
     private void placeBlockIfEmpty(Block block, String color, LinkedList<Map.Entry<Location, BlockData>> blockList) {
-        if (block.getType() == Material.AIR || block.getType() == Material.WATER || block.getType() == Material.LAVA) {
-            Material woolColor = getWoolColor(color);
-            if (woolColor != null) {
-                block.setType(woolColor);
-                BlockData blockData = Bukkit.createBlockData(woolColor);
+        if (block.getType() == Material.AIR) {
+            block.setType(getWoolColor(color));
+            BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
+            blockList.add(Map.entry(block.getLocation(), blockData));
+            block.setMetadata("isAir", new FixedMetadataValue(plugin, true));
+            markAsIndestructible(block);
+        } else if (block.getType() == Material.WATER) {
+            Levelled levelledBlock = (Levelled) block.getBlockData();
+            if (levelledBlock.getLevel() == 0) {
+                block.setType(getWoolColor(color));
+                BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
                 blockList.add(Map.entry(block.getLocation(), blockData));
+                block.setMetadata("isWaterSource", new FixedMetadataValue(plugin, true));
+                markAsIndestructible(block);
+            } else if (levelledBlock.getLevel() >= 1) {
+                block.setType(getWoolColor(color));
+                BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
+                blockList.add(Map.entry(block.getLocation(), blockData));
+                block.setMetadata("isAir", new FixedMetadataValue(plugin, true));
+                markAsIndestructible(block);
+            }
+        } else if (block.getType() == Material.LAVA) {
+            Levelled levelledBlock = (Levelled) block.getBlockData();
+            if (levelledBlock.getLevel() == 0) {
+                block.setType(getWoolColor(color));
+                BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
+                blockList.add(Map.entry(block.getLocation(), blockData));
+                block.setMetadata("isLavaSource", new FixedMetadataValue(plugin, true));
+                markAsIndestructible(block);
+            } else if (levelledBlock.getLevel() >= 1) {
+                block.setType(getWoolColor(color));
+                BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
+                blockList.add(Map.entry(block.getLocation(), blockData));
+                block.setMetadata("isAir", new FixedMetadataValue(plugin, true));
                 markAsIndestructible(block);
             }
         }
     }
-
 
     private void removeBlocks(LinkedList<Map.Entry<Location, BlockData>> blockList) {
         new BukkitRunnable() {
@@ -184,7 +236,19 @@ public class RainbowBridge implements Listener {
                 if (lastEntry != null) {
                     Location location = lastEntry.getKey();
                     Block blockToRemove = location.getBlock();
-                    blockToRemove.setType(Material.AIR);
+
+                    if (blockToRemove.hasMetadata("isAir")) {
+                        blockToRemove.setType(Material.AIR);
+                    } else if (blockToRemove.hasMetadata("isWaterSource")) {
+                        blockToRemove.setType(Material.WATER);
+                    } else if (blockToRemove.hasMetadata("isLavaSource")) {
+                        blockToRemove.setType(Material.LAVA);
+                    } else {
+                        Material originalType = originalBlocks.get(location);
+                        if (originalType != null) {
+                            blockToRemove.setType(originalType);
+                        }
+                    }
                 }
 
                 ticksToRemove--;

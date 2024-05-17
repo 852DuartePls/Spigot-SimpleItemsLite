@@ -27,12 +27,16 @@ public class VoidBucket implements Listener {
             if (bucket.isSimilar(voidBucketItemListener.getVoidBucketItem())) {
                 final int delayTicks = 1;
 
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    event.setCancelled(true);
+                try {
+                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                        event.setCancelled(true);
 
-                    ItemStack newBucket = voidBucketItemListener.getVoidBucketItem().clone();
-                    event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), newBucket);
-                }, delayTicks);
+                        ItemStack newBucket = voidBucketItemListener.getVoidBucketItem().clone();
+                        event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), newBucket);
+                    }, delayTicks);
+                } catch (Exception e) {
+                    event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.BUCKET));
+                }
             }
         }
     }

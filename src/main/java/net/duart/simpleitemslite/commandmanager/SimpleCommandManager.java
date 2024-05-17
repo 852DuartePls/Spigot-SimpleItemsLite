@@ -28,11 +28,10 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.RED + "This command can only be executed by a player.");
             return true;
         }
-        Player player = (Player) sender;
 
         if (!player.hasPermission("simpleitemslite.use")) {
             sender.sendMessage(ChatColor.RED + "You do not have permission to use this command.");
@@ -163,7 +162,8 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
         } else if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
             File dataFolder = plugin.getDataFolder();
             if (dataFolder.exists()) {
-                File[] files = dataFolder.listFiles((dir, name) -> name.endsWith(".yml"));
+                String partialFileName = args[1].toLowerCase();
+                File[] files = dataFolder.listFiles((dir, name) -> name.toLowerCase().startsWith(partialFileName) && name.endsWith(".yml"));
                 if (files != null) {
                     for (File file : files) {
                         completions.add(file.getName().replace(".yml", ""));

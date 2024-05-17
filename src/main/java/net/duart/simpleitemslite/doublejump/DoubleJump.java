@@ -22,6 +22,7 @@ public class DoubleJump implements Listener {
     private final BossBar jumpCooldownBar;
     private final CooldownManager cooldownManager;
     private final JavaPlugin plugin;
+    private boolean isFlying = false;
 
     public DoubleJump(JavaPlugin plugin, JumpItemListener jumpItemListener) {
         this.jumpItemListener = jumpItemListener;
@@ -35,11 +36,15 @@ public class DoubleJump implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.SURVIVAL && jumpItemListener.playerHasJumpItem(player)) {
+        if (player.getGameMode() == GameMode.SURVIVAL && jumpItemListener.playerHasJumpItem(player) && !isFlying) {
             long currentTime = System.currentTimeMillis();
             if (currentTime - lastJumpTime >= cooldownTimeSeconds * 1000) {
                 player.setAllowFlight(true);
-                event.getPlayer().getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> player.setAllowFlight(false), 20L);
+                isFlying = true;
+                event.getPlayer().getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    player.setAllowFlight(false);
+                    isFlying = false;
+                }, 25L);
             }
         }
     }

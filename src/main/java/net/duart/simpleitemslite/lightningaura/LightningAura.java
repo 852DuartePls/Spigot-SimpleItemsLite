@@ -1,17 +1,24 @@
 package net.duart.simpleitemslite.lightningaura;
 
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
+import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
@@ -21,6 +28,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class LightningAura implements Listener {
     private final JavaPlugin plugin;
@@ -76,8 +84,8 @@ public class LightningAura implements Listener {
         Player player = event.getPlayer();
         Block playerBlock = player.getLocation().getBlock();
 
-        for (int xOffset = -1; xOffset <= 1; xOffset++) {
-            for (int zOffset = -1; zOffset <= 1; zOffset++) {
+        for (int xOffset = -2; xOffset <= 2; xOffset++) {
+            for (int zOffset = -2; zOffset <= 2; zOffset++) {
                 Block blockBelowPlayer = playerBlock.getRelative(xOffset, -1, zOffset);
 
                 if (chargedPlayers.containsKey(player) && blockBelowPlayer.getType() == Material.WATER) {
@@ -215,14 +223,21 @@ public class LightningAura implements Listener {
         boolean lightningStruck = false;
 
         for (Entity entity : nearbyEntities) {
-            if ((entity instanceof Monster || entity instanceof Player) && hasCustomNameTag(entity) && !(entity instanceof ZombieVillager)) {
+            if ((entity instanceof LivingEntity livingEntity) && hasCustomNameTag(entity) && !(entity instanceof ZombieVillager)) {
+                double damageAmount = calculateDamage(livingEntity);
+
+                if (entity instanceof Player) {
+                    damageAmount = 16;
+                    applyUnmitigatedDamage((Player) entity, damageAmount);
+                }
+
                 if (entity.getLocation().distance(playerLocation) <= 20) {
                     entity.getWorld().strikeLightningEffect(entity.getLocation());
                     entitiesHit++;
-
-                    LivingEntity livingEntity = (LivingEntity) entity;
-                    double damageAmount = 21f;
-                    livingEntity.damage(damageAmount, player);
+                    {
+                        LivingEntity livingTarget = (LivingEntity) entity;
+                        livingTarget.damage(damageAmount, player);
+                    }
 
                     lightningStruck = true;
 
@@ -242,8 +257,46 @@ public class LightningAura implements Listener {
         }
     }
 
+    private double calculateDamage(LivingEntity entity) {
+        String customName = entity.getCustomName();
+        double baseDamage = 21.0;
+
+        if (customName != null && customName.matches(".*(?:lvl|level|lv|nivel|nv).*")) {
+            double damageMultiplier = 2.0;
+
+            return baseDamage * damageMultiplier;
+        } else {
+            return baseDamage;
+        }
+    }
+
     private boolean hasCustomNameTag(Entity entity) {
         return entity.getCustomName() == null || entity.getCustomName().isEmpty();
+    }
+
+    private void applyUnmitigatedDamage(Player player, double damage) {
+        AttributeInstance armorAttribute = player.getAttribute(Attribute.GENERIC_ARMOR);
+        AttributeInstance toughnessAttribute = player.getAttribute(Attribute.GENERIC_ARMOR_TOUGHNESS);
+
+        if (armorAttribute != null) {
+            double originalArmorValue = armorAttribute.getValue();
+            double originalToughnessValue = toughnessAttribute != null ? toughnessAttribute.getValue() : 0;
+
+            AttributeModifier armorModifier = new AttributeModifier(UUID.randomUUID(), "Temporary armor reduction", -originalArmorValue, AttributeModifier.Operation.ADD_NUMBER);
+            AttributeModifier toughnessModifier = new AttributeModifier(UUID.randomUUID(), "Temporary toughness reduction", -originalToughnessValue, AttributeModifier.Operation.ADD_NUMBER);
+
+            armorAttribute.addModifier(armorModifier);
+            if (toughnessAttribute != null) {
+                toughnessAttribute.addModifier(toughnessModifier);
+            }
+            player.damage(damage);
+            armorAttribute.removeModifier(armorModifier);
+            if (toughnessAttribute != null) {
+                toughnessAttribute.removeModifier(toughnessModifier);
+            }
+        } else {
+            player.damage(damage);
+        }
     }
 
     private void endCharging(Player player) {
@@ -323,11 +376,11 @@ public class LightningAura implements Listener {
         thirdCooldownBar.setProgress(1.0);
 
         BukkitRunnable thirdCooldownTask = new BukkitRunnable() {
-            int cooldownTicks = 10 * 20;
+            int cooldownTicks = 15 * 20;
 
             @Override
             public void run() {
-                double cooldownProgress = Math.max(0.0, (double) cooldownTicks / (10 * 20));
+                double cooldownProgress = Math.max(0.0, (double) cooldownTicks / (15 * 20));
 
                 thirdCooldownBar.setProgress(cooldownProgress);
 
