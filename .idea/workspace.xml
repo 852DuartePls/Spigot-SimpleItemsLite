@@ -5,7 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3419dcbe-c7ec-4bda-9416-c253dfc95c81" name="Changes" comment="A significant part has been rewritten in favor of optimization">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/Plugins.Spigot.SimpleItemsLite - Upload Ver.SimpleItemsLite.main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/SimpleItemsLite.test.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/Spigot.SimpleItemsLite - Upload Ver.SimpleItemsLite.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/SimpleItemsLite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/SimpleItemsLite.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/commandmanager/SimpleCommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/commandmanager/SimpleCommandManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/DoubleJump.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/DoubleJump.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/funbow/FunBow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/funbow/FunBow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/funbow/FunBowItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/funbow/FunBowItemListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/infinitewater/MagicWater.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/infinitewater/MagicWater.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/infinitewater/MagicWaterItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/infinitewater/MagicWaterItemListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningAura.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningAura.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningItemListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowItemListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucketItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucketItemListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -346,23 +368,7 @@
       <option name="project" value="LOCAL" />
       <updated>1715915271415</updated>
     </task>
-    <task id="LOCAL-00012" summary="A significant part has been rewritten in favor of optimization">
-      <option name="closed" value="true" />
-      <created>1720896961424</created>
-      <option name="number" value="00012" />
-      <option name="presentableId" value="LOCAL-00012" />
-      <option name="project" value="LOCAL" />
-      <updated>1720896961424</updated>
-    </task>
-    <task id="LOCAL-00013" summary="A significant part has been rewritten in favor of optimization">
-      <option name="closed" value="true" />
-      <created>1720902152888</created>
-      <option name="number" value="00013" />
-      <option name="presentableId" value="LOCAL-00013" />
-      <option name="project" value="LOCAL" />
-      <updated>1720902152888</updated>
-    </task>
-    <option name="localTasksCounter" value="14" />
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
