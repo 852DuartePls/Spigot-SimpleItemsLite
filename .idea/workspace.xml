@@ -4,15 +4,30 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="3419dcbe-c7ec-4bda-9416-c253dfc95c81" name="Changes" comment="- Weird Bugfix lol">
+    <list default="true" id="3419dcbe-c7ec-4bda-9416-c253dfc95c81" name="Changes" comment="A significant part has been rewritten in favor of optimization">
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/Plugins.Spigot.SimpleItemsLite - Upload Ver.SimpleItemsLite.main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/SimpleItemsLite.test.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules/Spigot.SimpleItemsLite - Upload Ver.SimpleItemsLite.main.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/jarRepositories.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/SimpleItemsLite.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/SimpleItemsLite.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/commandmanager/SimpleCommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/commandmanager/SimpleCommandManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/DoubleJump.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/DoubleJump.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/doublejump/JumpItemListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/funbow/FunBow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/funbow/FunBow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/funbow/FunBowItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/funbow/FunBowItemListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/infinitewater/MagicWater.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/infinitewater/MagicWater.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/infinitewater/MagicWaterItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/infinitewater/MagicWaterItemListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningAura.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningAura.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/lightningaura/LightningItemListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowBridge.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowBridge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/rainbowbridge/RainbowItemListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucket.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucket.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucketItemListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/net/duart/simpleitemslite/voidbucket/VoidBucketItemListener.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/plugin.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/plugin.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,7 +50,40 @@
         </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="SimpleItemsLite" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="SimpleItemsLite" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="SimpleItemsLite" type="f1a62948:ProjectNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="build" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="SimpleItemsLite" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="SimpleItemsLite" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="runtimeClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="SimpleItemsLite" type="f1a62948:ProjectNode" />
+                <item name="Dependencies" type="6de06a37:ExternalSystemViewDefaultContributor$MyDependenciesNode" />
+                <item name="testCompileClasspath" type="62daadca:ExternalSystemViewDefaultContributor$DependencyScopeExternalSystemNode" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
@@ -77,30 +125,30 @@
     <option name="showExcludedFiles" value="false" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Downloaded.Files.Path.Enabled": "false",
-    "Gradle.Run Server.executor": "Run",
-    "Gradle.SimpleItemsLite [buildDependents].executor": "Run",
-    "Gradle.SimpleItemsLite [build].executor": "Run",
-    "Gradle.SimpleItemsLite [wrapper].executor": "Run",
-    "Repository.Attach.Annotations": "false",
-    "Repository.Attach.JavaDocs": "false",
-    "Repository.Attach.Sources": "false",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Duarte/Desktop/Documentos - David/Plugins/Spigot/SimpleItemsLite - Upload Ver",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.4091954",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "settings.editor.splitter.proportion": "0.19295558"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Downloaded.Files.Path.Enabled&quot;: &quot;false&quot;,
+    &quot;Gradle.Run Server.executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.SimpleItemsLite [buildDependents].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.SimpleItemsLite [build].executor&quot;: &quot;Run&quot;,
+    &quot;Gradle.SimpleItemsLite [wrapper].executor&quot;: &quot;Run&quot;,
+    &quot;Repository.Attach.Annotations&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.JavaDocs&quot;: &quot;false&quot;,
+    &quot;Repository.Attach.Sources&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Duarte/Desktop/Proyectos/Plugins/Spigot/SimpleItemsLite - Upload Ver&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.4091954&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.splitter.proportion&quot;: &quot;0.19295558&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
       <recent name="net.duart.simpleitemslite.util" />
@@ -312,7 +360,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714009585029</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="- Several bugfixes">
+      <option name="closed" value="true" />
+      <created>1715915271415</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1715915271415</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -332,6 +388,8 @@
     <MESSAGE value="- Fixed improper usage of onEntityShootBow method&#10;  - Updated onEntityShootBow method in FunBow class to ensure it only processes shoots from FunBowItems, preventing unintended behavior." />
     <MESSAGE value="- Version 1.1.0" />
     <MESSAGE value="- Weird Bugfix lol" />
-    <option name="LAST_COMMIT_MESSAGE" value="- Weird Bugfix lol" />
+    <MESSAGE value="- Several bugfixes" />
+    <MESSAGE value="A significant part has been rewritten in favor of optimization" />
+    <option name="LAST_COMMIT_MESSAGE" value="A significant part has been rewritten in favor of optimization" />
   </component>
 </project>

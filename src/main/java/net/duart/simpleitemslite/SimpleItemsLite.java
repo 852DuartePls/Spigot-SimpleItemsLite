@@ -43,20 +43,17 @@ public class SimpleItemsLite extends JavaPlugin {
         RainbowBridge rainbowBridge = new RainbowBridge(this, rainbowItemListener);
         MagicWaterItemListener magicWaterItemListener = new MagicWaterItemListener(this);
         MagicWater magicWater = new MagicWater(this, magicWaterItemListener);
-        FunBowItemListener funBowItemListener = new FunBowItemListener(this);
-        FunBow funBow = new FunBow(this, funBowItemListener);
+        FunBow funBow = new FunBow(this, new FunBowItemListener(this));
         VoidBucketItemListener voidBucketItemListener = new VoidBucketItemListener(this);
         VoidBucket voidBucket = new VoidBucket(this, voidBucketItemListener);
-
-        getServer().getPluginManager().registerEvents(rainbowItemListener, this);
-        getServer().getPluginManager().registerEvents(rainbowBridge, this);
         getServer().getPluginManager().registerEvents(jumpItemListener, this);
         getServer().getPluginManager().registerEvents(doubleJump, this);
         getServer().getPluginManager().registerEvents(lightningItemListener, this);
         getServer().getPluginManager().registerEvents(lightningAura, this);
+        getServer().getPluginManager().registerEvents(rainbowItemListener, this);
+        getServer().getPluginManager().registerEvents(rainbowBridge, this);
         getServer().getPluginManager().registerEvents(magicWaterItemListener, this);
         getServer().getPluginManager().registerEvents(magicWater, this);
-        getServer().getPluginManager().registerEvents(funBowItemListener, this);
         getServer().getPluginManager().registerEvents(funBow, this);
         getServer().getPluginManager().registerEvents(voidBucketItemListener, this);
         getServer().getPluginManager().registerEvents(voidBucket, this);

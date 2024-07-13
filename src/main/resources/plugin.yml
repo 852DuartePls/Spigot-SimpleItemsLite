@@ -9,10 +9,3 @@ commands:
     usage: /simpleitemslite give (item)
     aliases:
       - sil
-
-listeners:
-  - net.duart.simpleitemslite.rainbowbridge.RainbowItemListener
-  - net.duart.simpleitemslite.doublejump.JumpItemListener
-  - net.duart.simpleitemslite.electriccharge.ElectricItemListener
-  - net.duart.simpleitemslite.infinitewater.MagicWaterItemListener
-  - net.duart.simpleitemslite.funbow.FunBowItemListener

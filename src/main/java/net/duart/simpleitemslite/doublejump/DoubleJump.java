@@ -1,6 +1,9 @@
 package net.duart.simpleitemslite.doublejump;
 
 import org.bukkit.*;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,9 +14,6 @@ import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 
 public class DoubleJump implements Listener {
     private final JumpItemListener jumpItemListener;
@@ -36,60 +36,83 @@ public class DoubleJump implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.SURVIVAL && jumpItemListener.playerHasJumpItem(player) && !isFlying) {
-            long currentTime = System.currentTimeMillis();
-            if (currentTime - lastJumpTime >= cooldownTimeSeconds * 1000) {
-                player.setAllowFlight(true);
-                isFlying = true;
-                event.getPlayer().getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                    player.setAllowFlight(false);
-                    isFlying = false;
-                }, 25L);
-            }
+
+        if (canActivateDoubleJump(player)) {
+            activateFlight(player);
         }
+    }
+
+    private boolean canActivateDoubleJump(Player player) {
+        return player.getGameMode() == GameMode.SURVIVAL &&
+                jumpItemListener.playerHasJumpItem(player) &&
+                !isFlying &&
+                System.currentTimeMillis() - lastJumpTime >= cooldownTimeSeconds * 1000;
+    }
+
+    private void activateFlight(Player player) {
+        player.setAllowFlight(true);
+        isFlying = true;
+        player.getServer().getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+            player.setAllowFlight(false);
+            isFlying = false;
+        }, 25L);
     }
 
     @EventHandler
     public void onPlayerToggleFlight(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.SURVIVAL && jumpItemListener.playerHasJumpItem(player)) {
-            if (!player.isFlying()) {
-                if (System.currentTimeMillis() - lastJumpTime >= cooldownTimeSeconds * 1000) {
-                    if (!cooldownManager.isOnCooldown(player)) {
-                        event.setCancelled(true);
-                        player.setAllowFlight(false);
-                        player.setFlying(false);
-                        player.setVelocity(player.getLocation().getDirection().multiply(1.5).setY(1));
 
-                        lastJumpTime = System.currentTimeMillis();
-                        for (Entity entity : player.getNearbyEntities(20, 20, 20)) {
-                            if (entity instanceof Player nearbyPlayer) {
-                                Location playerLoc = player.getLocation();
-                                Location nearbyLoc = nearbyPlayer.getLocation();
-                                double distance = playerLoc.distance(nearbyLoc);
+        if (canDoubleJump(player)) {
+            event.setCancelled(true);
+            deactivateFlight(player);
+            playJumpEffects(player);
+            startCooldown(player);
+        }
+    }
 
-                                float volume = (float) (1.0 - (distance / 20.0));
-                                float pitch = 1.0f;
+    private boolean canDoubleJump(Player player) {
+        return player.getGameMode() == GameMode.SURVIVAL &&
+                jumpItemListener.playerHasJumpItem(player) &&
+                !player.isFlying() &&
+                System.currentTimeMillis() - lastJumpTime >= cooldownTimeSeconds * 1000 &&
+                !cooldownManager.isOnCooldown(player);
+    }
 
-                                nearbyPlayer.playSound(nearbyLoc, Sound.ENTITY_ENDER_DRAGON_FLAP, volume, pitch);
-                            }
-                        }
-                        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1.0f, 1.0f);
-                        player.getWorld().spawnParticle(Particle.REDSTONE, player.getLocation().add(0, -0.5, 0), 30, 0.5, 0.5, 0.5, 1.0, new Particle.DustOptions(Color.WHITE, 3));
+    private void deactivateFlight(Player player) {
+        player.setAllowFlight(false);
+        player.setFlying(false);
+        player.setVelocity(player.getLocation().getDirection().multiply(1.5).setY(1));
+        lastJumpTime = System.currentTimeMillis();
+    }
 
-                        startCooldown(player);
-                    }
-                }
+    private void playJumpEffects(Player player) {
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1.0f, 1.0f);
+
+        for (Entity entity : player.getNearbyEntities(20, 20, 20)) {
+            if (entity instanceof Player nearbyPlayer) {
+                Location playerLoc = player.getLocation();
+                Location nearbyLoc = nearbyPlayer.getLocation();
+                double distance = playerLoc.distance(nearbyLoc);
+
+                float volume = (float) (1.0 - (distance / 20.0));
+                float pitch = 1.0f;
+
+                nearbyPlayer.playSound(nearbyLoc, Sound.ENTITY_ENDER_DRAGON_FLAP, volume, pitch);
             }
         }
+
+        player.getWorld().spawnParticle(Particle.REDSTONE, player.getLocation().add(0, -0.5, 0), 30, 0.5, 0.5, 0.5, 1.0, new Particle.DustOptions(Color.WHITE, 3));
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player && event.getCause() == EntityDamageEvent.DamageCause.FALL) {
-            if (System.currentTimeMillis() - lastJumpTime < cooldownTimeSeconds * 1000) {
-                event.setCancelled(true);
-            }
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+
+        if (event.getCause() == EntityDamageEvent.DamageCause.FALL &&
+                System.currentTimeMillis() - lastJumpTime < cooldownTimeSeconds * 1000) {
+            event.setCancelled(true);
         }
     }
 

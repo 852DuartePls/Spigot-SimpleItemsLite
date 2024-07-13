@@ -10,10 +10,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -28,21 +25,37 @@ import java.util.Map;
 public class RainbowBridge implements Listener {
     private final JavaPlugin plugin;
     private final RainbowItemListener rainbowItemListener;
-    private final int bridgeDurationTicks = 8 * 20;
+    private final int bridgeDurationTicks = 10 * 20;
     private final int cooldownTicks = 20 * 20;
     private final BossBar rainbowCooldownBar;
     private final Map<Location, Material> originalBlocks = new HashMap<>();
 
+    private enum RainbowColor {
+        RED(Material.RED_WOOL),
+        ORANGE(Material.ORANGE_WOOL),
+        YELLOW(Material.YELLOW_WOOL),
+        LIME(Material.LIME_WOOL),
+        GREEN(Material.GREEN_WOOL),
+        CYAN(Material.CYAN_WOOL),
+        LIGHT_BLUE(Material.LIGHT_BLUE_WOOL),
+        PURPLE(Material.PURPLE_WOOL),
+        MAGENTA(Material.MAGENTA_WOOL),
+        PINK(Material.PINK_WOOL),
+        BLACK(Material.BLACK_WOOL),
+        GRAY(Material.GRAY_WOOL),
+        LIGHT_GRAY(Material.LIGHT_GRAY_WOOL),
+        WHITE(Material.WHITE_WOOL),
+        BLUE(Material.BLUE_WOOL),
+        BROWN(Material.BROWN_WOOL);
 
-    private boolean isBuildingBridge(Player player) {
-        return player.hasMetadata("buildingBridge");
-    }
+        private final Material material;
 
-    private void setBuildingBridge(Player player, boolean building) {
-        if (building) {
-            player.setMetadata("buildingBridge", new FixedMetadataValue(plugin, true));
-        } else {
-            player.removeMetadata("buildingBridge", plugin);
+        RainbowColor(Material material) {
+            this.material = material;
+        }
+
+        public Material getMaterial() {
+            return material;
         }
     }
 
@@ -50,19 +63,23 @@ public class RainbowBridge implements Listener {
         this.plugin = plugin;
         this.rainbowItemListener = rainbowItemListener;
         Bukkit.getPluginManager().registerEvents(this, plugin);
-        this.rainbowCooldownBar = Bukkit.createBossBar("§cR§6a§ei§an§3b§9o§5w §6B§er§ai§3d§9g§5e", BarColor.BLUE, BarStyle.SEGMENTED_20);
+        this.rainbowCooldownBar = Bukkit.createBossBar(ChatColor.RED + "R" + ChatColor.GOLD + "a" + ChatColor.YELLOW + "i" +
+                        ChatColor.GREEN + "n" + ChatColor.AQUA + "b" + ChatColor.BLUE + "o" + ChatColor.LIGHT_PURPLE + "w " +
+                        ChatColor.GOLD + "B" + ChatColor.RED + "r" + ChatColor.LIGHT_PURPLE + "i" +
+                        ChatColor.AQUA + "d" + ChatColor.BLUE + "g" + ChatColor.DARK_PURPLE + "e",
+                BarColor.BLUE, BarStyle.SEGMENTED_20);
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
-            return;
-        }
-
         Player player = event.getPlayer();
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
 
         if (!itemInHand.isSimilar(rainbowItemListener.getRainbowBridgeItem())) {
+            return;
+        }
+
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK && event.getAction() != Action.RIGHT_CLICK_AIR) {
             return;
         }
 
@@ -90,7 +107,18 @@ public class RainbowBridge implements Listener {
 
     private boolean isOnCooldown(Player player) {
         return player.hasMetadata("cooldown");
+    }
 
+    private boolean isBuildingBridge(Player player) {
+        return player.hasMetadata("buildingBridge");
+    }
+
+    private void setBuildingBridge(Player player, boolean building) {
+        if (building) {
+            player.setMetadata("buildingBridge", new FixedMetadataValue(plugin, true));
+        } else {
+            player.removeMetadata("buildingBridge", plugin);
+        }
     }
 
     private void startRainbowBridge(Player player) {
@@ -101,10 +129,7 @@ public class RainbowBridge implements Listener {
 
         new BukkitRunnable() {
             int ticksPassed = 0;
-            final String[] rainbowColors = {
-                    "RED", "ORANGE", "YELLOW", "LIME", "GREEN", "CYAN", "LIGHT_BLUE", "PURPLE",
-                    "MAGENTA", "PINK", "BLACK", "GRAY", "LIGHT_GRAY", "WHITE", "BLUE", "BROWN"
-            };
+            final RainbowColor[] rainbowColors = RainbowColor.values();
 
             @Override
             public void run() {
@@ -123,47 +148,9 @@ public class RainbowBridge implements Listener {
                 ticksPassed++;
             }
         }.runTaskTimer(plugin, 0, 1);
-
     }
 
-    private void markAsIndestructible(Block block) {
-        if (block != null && !block.hasMetadata("indestructible")) {
-            block.setMetadata("indestructible", new FixedMetadataValue(plugin, true));
-            block.setMetadata("fireproof", new FixedMetadataValue(plugin, true)); // Mark as fireproof
-            block.setMetadata("explosion-resistant", new FixedMetadataValue(plugin, true)); // Mark as explosion-resistant
-        }
-    }
-
-    @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        Player player = event.getPlayer();
-        if (player.getGameMode() == GameMode.SURVIVAL) {
-            Block block = event.getBlock();
-            if (block.hasMetadata("indestructible")) {
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onBlockExplode(BlockExplodeEvent event) {
-        for (Block block : event.blockList()) {
-            if (block.hasMetadata("indestructible") || block.hasMetadata("explosion-resistant")) {
-                event.setCancelled(true);
-                break;
-            }
-        }
-    }
-
-    @EventHandler
-    public void onBlockBurn(BlockBurnEvent event) {
-        Block block = event.getBlock();
-        if (block.hasMetadata("indestructible") || block.hasMetadata("fireproof")) {
-            event.setCancelled(true);
-        }
-    }
-
-    private void placeRainbowBlocks(Location playerLocation, World world, LinkedList<Map.Entry<Location, BlockData>> blockList, String[] rainbowColors) {
+    private void placeRainbowBlocks(Location playerLocation, World world, LinkedList<Map.Entry<Location, BlockData>> blockList, RainbowColor[] rainbowColors) {
         int radius = 1;
         int colorIndex = 0;
 
@@ -180,42 +167,47 @@ public class RainbowBridge implements Listener {
         }
     }
 
-    private void placeBlockIfEmpty(Block block, String color, LinkedList<Map.Entry<Location, BlockData>> blockList) {
+    private void placeBlockIfEmpty(Block block, RainbowColor color, LinkedList<Map.Entry<Location, BlockData>> blockList) {
         if (block.getType() == Material.AIR) {
-            block.setType(getWoolColor(color));
-            BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
+            block.setType(color.getMaterial());
+            BlockData blockData = Bukkit.createBlockData(color.getMaterial());
             blockList.add(Map.entry(block.getLocation(), blockData));
             block.setMetadata("isAir", new FixedMetadataValue(plugin, true));
             markAsIndestructible(block);
+            originalBlocks.put(block.getLocation(), Material.AIR);
         } else if (block.getType() == Material.WATER) {
             Levelled levelledBlock = (Levelled) block.getBlockData();
             if (levelledBlock.getLevel() == 0) {
-                block.setType(getWoolColor(color));
-                BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
+                block.setType(color.getMaterial());
+                BlockData blockData = Bukkit.createBlockData(color.getMaterial());
                 blockList.add(Map.entry(block.getLocation(), blockData));
                 block.setMetadata("isWaterSource", new FixedMetadataValue(plugin, true));
                 markAsIndestructible(block);
+                originalBlocks.put(block.getLocation(), Material.WATER);
             } else if (levelledBlock.getLevel() >= 1) {
-                block.setType(getWoolColor(color));
-                BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
+                block.setType(color.getMaterial());
+                BlockData blockData = Bukkit.createBlockData(color.getMaterial());
                 blockList.add(Map.entry(block.getLocation(), blockData));
                 block.setMetadata("isAir", new FixedMetadataValue(plugin, true));
                 markAsIndestructible(block);
+                originalBlocks.put(block.getLocation(), Material.AIR);
             }
         } else if (block.getType() == Material.LAVA) {
             Levelled levelledBlock = (Levelled) block.getBlockData();
             if (levelledBlock.getLevel() == 0) {
-                block.setType(getWoolColor(color));
-                BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
+                block.setType(color.getMaterial());
+                BlockData blockData = Bukkit.createBlockData(color.getMaterial());
                 blockList.add(Map.entry(block.getLocation(), blockData));
                 block.setMetadata("isLavaSource", new FixedMetadataValue(plugin, true));
                 markAsIndestructible(block);
+                originalBlocks.put(block.getLocation(), Material.LAVA);
             } else if (levelledBlock.getLevel() >= 1) {
-                block.setType(getWoolColor(color));
-                BlockData blockData = Bukkit.createBlockData(getWoolColor(color));
+                block.setType(color.getMaterial());
+                BlockData blockData = Bukkit.createBlockData(color.getMaterial());
                 blockList.add(Map.entry(block.getLocation(), blockData));
                 block.setMetadata("isAir", new FixedMetadataValue(plugin, true));
                 markAsIndestructible(block);
+                originalBlocks.put(block.getLocation(), Material.AIR);
             }
         }
     }
@@ -256,52 +248,57 @@ public class RainbowBridge implements Listener {
         }.runTaskTimer(plugin, 0, 1);
     }
 
-    private Material getWoolColor(String color) {
-        return switch (color.toUpperCase()) {
-            case "RED" -> Material.RED_WOOL;
-            case "ORANGE" -> Material.ORANGE_WOOL;
-            case "YELLOW" -> Material.YELLOW_WOOL;
-            case "LIME" -> Material.LIME_WOOL;
-            case "GREEN" -> Material.GREEN_WOOL;
-            case "CYAN" -> Material.CYAN_WOOL;
-            case "LIGHT_BLUE" -> Material.LIGHT_BLUE_WOOL;
-            case "PURPLE" -> Material.PURPLE_WOOL;
-            case "MAGENTA" -> Material.MAGENTA_WOOL;
-            case "PINK" -> Material.PINK_WOOL;
-            case "BLACK" -> Material.BLACK_WOOL;
-            case "GRAY" -> Material.GRAY_WOOL;
-            case "LIGHT_GRAY" -> Material.LIGHT_GRAY_WOOL;
-            case "WHITE" -> Material.WHITE_WOOL;
-            case "BLUE" -> Material.BLUE_WOOL;
-            case "BROWN" -> Material.BROWN_WOOL;
-            default -> null;
-        };
+    private void markAsIndestructible(Block block) {
+        block.setMetadata("indestructible", new FixedMetadataValue(plugin, true));
     }
 
     private void startCooldown(Player player) {
+        player.setMetadata("cooldown", new FixedMetadataValue(plugin, true));
+
         new BukkitRunnable() {
-            int remainingTicks = cooldownTicks;
-            int remainingSeconds = cooldownTicks / 20;
-            int prevRemainingSeconds = remainingSeconds;
+            int ticksLeft = cooldownTicks;
 
             @Override
             public void run() {
-                if (remainingTicks <= 0) {
-                    setBuildingBridge(player, false);
-                    rainbowCooldownBar.removePlayer(player);
+                if (ticksLeft <= 0) {
                     cancel();
+                    player.removeMetadata("cooldown", plugin);
+                    rainbowCooldownBar.removePlayer(player);
                     return;
                 }
 
-                remainingSeconds = remainingTicks / 20;
-                double progress = (double) remainingTicks / cooldownTicks;
+                double progress = (double) ticksLeft / cooldownTicks;
                 rainbowCooldownBar.setProgress(progress);
-                if (remainingSeconds != prevRemainingSeconds) {
-                    prevRemainingSeconds = remainingSeconds;
-                }
-
-                remainingTicks--;
+                ticksLeft--;
             }
         }.runTaskTimer(plugin, 0, 1);
+    }
+
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        if (event.getBlock().hasMetadata("indestructible")) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event) {
+        if (event.getBlock().hasMetadata("indestructible")) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBlockExplode(BlockExplodeEvent event) {
+        if (event.getBlock().hasMetadata("indestructible")) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onBlockBurn(BlockBurnEvent event) {
+        if (event.getBlock().hasMetadata("indestructible")) {
+            event.setCancelled(true);
+        }
     }
 }

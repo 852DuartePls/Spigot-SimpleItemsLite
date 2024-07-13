@@ -1,8 +1,8 @@
 package net.duart.simpleitemslite.infinitewater;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.inventory.ItemStack;
@@ -12,29 +12,34 @@ public class MagicWater implements Listener {
     private final JavaPlugin plugin;
     private final MagicWaterItemListener magicWaterItemListener;
 
-
     public MagicWater(JavaPlugin plugin, MagicWaterItemListener magicWaterItemListener) {
         this.plugin = plugin;
         this.magicWaterItemListener = magicWaterItemListener;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        Material bucketMaterial = event.getBucket();
+        ItemStack magicWaterItem = magicWaterItemListener.getMagicWaterItem();
+        ItemStack mainHandItem = event.getPlayer().getInventory().getItemInMainHand();
+        ItemStack offHandItem = event.getPlayer().getInventory().getItemInOffHand();
 
-        if (bucketMaterial == Material.WATER_BUCKET) {
-            ItemStack bucket = event.getPlayer().getInventory().getItemInMainHand();
+        boolean magicWaterInMainHand = mainHandItem.isSimilar(magicWaterItem);
+        boolean magicWaterInOffHand = offHandItem.isSimilar(magicWaterItem);
 
-            if (bucket.isSimilar(magicWaterItemListener.getMagicWaterItem())) {
-                final int delayTicks = 1;
-
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    event.setCancelled(true);
-
-                    ItemStack newBucket = magicWaterItemListener.getMagicWaterItem().clone();
-                    event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), newBucket);
-                }, delayTicks);
-            }
+        if (!magicWaterInMainHand && !magicWaterInOffHand) {
+            return;
         }
+
+        final int delayTicks = 1;
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            event.setCancelled(true);
+            ItemStack newBucket = magicWaterItem.clone();
+
+            if (magicWaterInMainHand) {
+                event.getPlayer().getInventory().setItemInMainHand(newBucket);
+            } else {
+                event.getPlayer().getInventory().setItemInOffHand(newBucket);
+            }
+        }, delayTicks);
     }
 }

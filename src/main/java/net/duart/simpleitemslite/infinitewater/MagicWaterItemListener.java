@@ -35,65 +35,67 @@ public class MagicWaterItemListener implements Listener {
         magicWaterItem = new ItemStack(material);
         ItemMeta itemMeta = magicWaterItem.getItemMeta();
 
-        if (itemMeta != null) {
-            File magicwaterConfigFile = new File(plugin.getDataFolder(), "MagicWaterItem.yml");
-            FileConfiguration config = YamlConfiguration.loadConfiguration(magicwaterConfigFile);
-
-            if (config.contains("MagicWaterItem")) {
-                ConfigurationSection magicWaterItemSection = config.getConfigurationSection("MagicWaterItem");
-                if (magicWaterItemSection != null) {
-                    String displayName = magicWaterItemSection.getString("DisplayName");
-                    assert displayName != null;
-                    displayName = ChatColor.translateAlternateColorCodes('&', displayName);
-                    itemMeta.setDisplayName(displayName);
-                    if (magicWaterItemSection.contains("Lore")) {
-                        List<String> lore = magicWaterItemSection.getStringList("Lore");
-                        lore = lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
-                        itemMeta.setLore(lore);
-                        itemMeta.setUnbreakable(true);
-                    }
-                    if (magicWaterItemSection.contains("Enchantments")) {
-                        ConfigurationSection enchantmentsSection = magicWaterItemSection.getConfigurationSection("Enchantments");
-                        if (enchantmentsSection != null) {
-                            for (String enchantmentKey : enchantmentsSection.getKeys(false)) {
-                                NamespacedKey namespacedKey = NamespacedKey.minecraft(enchantmentKey);
-                                Enchantment enchantment = Enchantment.getByKey(namespacedKey);
-                                if (enchantment != null) {
-                                    int level = enchantmentsSection.getInt(enchantmentKey);
-                                    itemMeta.addEnchant(enchantment, level, true);
-                                }
-                            }
-                        }
-                    }
-                    magicWaterItem.setItemMeta(itemMeta);
-                    plugin.getLogger().info("MagicWaterItem config loaded correctly");
-                    plugin.getLogger().info("Material: " + magicWaterItem.getType());
-                    plugin.getLogger().info("DisplayName: " + magicWaterItem.getItemMeta().getDisplayName());
-                    plugin.getLogger().info("Lore: " + magicWaterItem.getItemMeta().getLore());
-                    for (Map.Entry<Enchantment, Integer> entry : magicWaterItem.getEnchantments().entrySet()) {
-                        plugin.getLogger().info("Enchantment: " + entry.getKey().getKey() + ", Level: " + entry.getValue());
-                    }
-
-                    ItemStack translatedItem = new ItemStack(magicWaterItem);
-                    ItemMeta translatedMeta = translatedItem.getItemMeta();
-                    if (translatedMeta != null) {
-                        translatedMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', translatedMeta.getDisplayName()));
-                        List<String> translatedLore = translatedMeta.getLore();
-                        if (translatedLore != null) {
-                            translatedLore = translatedLore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
-                            translatedMeta.setLore(translatedLore);
-                        }
-                        translatedItem.setItemMeta(translatedMeta);
-                        magicWaterItem = translatedItem;
-                    }
-                } else {
-                    plugin.getLogger().warning("Error creating ItemMeta for MagicWaterItem");
-                }
-            } else {
-                plugin.getLogger().warning("Material not valid for MagicWaterItem");
-            }
-        } else {
+        if (itemMeta == null) {
             plugin.getLogger().warning("Error creating ItemMeta for MagicWaterItem");
+            return;
+        }
+
+        File magicwaterConfigFile = new File(plugin.getDataFolder(), "MagicWaterItem.yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(magicwaterConfigFile);
+
+        if (!config.contains("MagicWaterItem")) {
+            plugin.getLogger().warning("Section 'MagicWaterItem' not found in file '" + magicwaterConfigFile.getName() + "'.");
+            return;
+        }
+
+        ConfigurationSection magicWaterItemSection = config.getConfigurationSection("MagicWaterItem");
+        if (magicWaterItemSection == null) {
+            plugin.getLogger().warning("Error creating ItemMeta for MagicWaterItem");
+            return;
+        }
+
+        String displayName = magicWaterItemSection.getString("DisplayName");
+        if (displayName == null) {
+            plugin.getLogger().warning("Display name not defined for MagicWaterItem in file '" + magicwaterConfigFile.getName() + "'.");
+            return;
+        }
+
+        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+
+        List<String> lore = magicWaterItemSection.getStringList("Lore");
+        if (!lore.isEmpty()) {
+            lore = lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
+            itemMeta.setLore(lore);
+        }
+
+        itemMeta.setUnbreakable(true);
+        magicWaterItem.setItemMeta(itemMeta);
+
+        if (magicWaterItemSection.contains("Enchantments")) {
+            ConfigurationSection enchantmentsSection = magicWaterItemSection.getConfigurationSection("Enchantments");
+            if (enchantmentsSection != null) {
+                for (String enchantmentKey : enchantmentsSection.getKeys(false)) {
+                    NamespacedKey namespacedKey = NamespacedKey.minecraft(enchantmentKey);
+                    Enchantment enchantment = Enchantment.getByKey(namespacedKey);
+                    if (enchantment != null) {
+                        int level = enchantmentsSection.getInt(enchantmentKey);
+                        magicWaterItem.addUnsafeEnchantment(enchantment, level);
+                    } else {
+                        plugin.getLogger().warning("Invalid enchantment '" + enchantmentKey + "' for MagicWaterItem in file '" + magicwaterConfigFile.getName() + "'.");
+                    }
+                }
+            }
+        }
+
+        plugin.getLogger().info("MagicWaterItem config loaded correctly");
+        plugin.getLogger().info("Material: " + magicWaterItem.getType());
+        plugin.getLogger().info("DisplayName: " + magicWaterItem.getItemMeta().getDisplayName());
+        List<String> itemLore = magicWaterItem.getItemMeta().getLore();
+        if (itemLore != null) {
+            plugin.getLogger().info("Lore: " + itemLore);
+        }
+        for (Map.Entry<Enchantment, Integer> entry : magicWaterItem.getEnchantments().entrySet()) {
+            plugin.getLogger().info("Enchantment: " + entry.getKey().getKey() + ", Level: " + entry.getValue());
         }
     }
 }

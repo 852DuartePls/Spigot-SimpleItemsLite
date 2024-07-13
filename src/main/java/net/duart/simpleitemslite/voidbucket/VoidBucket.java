@@ -1,8 +1,8 @@
 package net.duart.simpleitemslite.voidbucket;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerBucketFillEvent;
 import org.bukkit.inventory.ItemStack;
@@ -17,27 +17,30 @@ public class VoidBucket implements Listener {
         this.voidBucketItemListener = voidBucketItemListener;
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerBucketFill(PlayerBucketFillEvent event) {
-        Material bucketMaterial = event.getBucket();
+        ItemStack voidBucket = voidBucketItemListener.getVoidBucketItem();
+        ItemStack mainHandItem = event.getPlayer().getInventory().getItemInMainHand();
+        ItemStack offHandItem = event.getPlayer().getInventory().getItemInOffHand();
 
-        if (bucketMaterial == Material.BUCKET) {
-            ItemStack bucket = event.getPlayer().getInventory().getItemInMainHand();
+        boolean voidBucketInMainHand = mainHandItem.isSimilar(voidBucket);
+        boolean voidBucketInOffHand = offHandItem.isSimilar(voidBucket);
 
-            if (bucket.isSimilar(voidBucketItemListener.getVoidBucketItem())) {
-                final int delayTicks = 1;
-
-                try {
-                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                        event.setCancelled(true);
-
-                        ItemStack newBucket = voidBucketItemListener.getVoidBucketItem().clone();
-                        event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), newBucket);
-                    }, delayTicks);
-                } catch (Exception e) {
-                    event.getPlayer().getInventory().setItem(event.getPlayer().getInventory().getHeldItemSlot(), new ItemStack(Material.BUCKET));
-                }
-            }
+        if (!voidBucketInMainHand && !voidBucketInOffHand) {
+            return;
         }
+
+        final int delayTicks = 1;
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            event.setCancelled(true);
+
+            ItemStack newBucket = voidBucket.clone();
+
+            if (voidBucketInMainHand) {
+                event.getPlayer().getInventory().setItemInMainHand(newBucket);
+            } else {
+                event.getPlayer().getInventory().setItemInOffHand(newBucket);
+            }
+        }, delayTicks);
     }
 }

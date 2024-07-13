@@ -1,15 +1,8 @@
 package net.duart.simpleitemslite.commandmanager;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.*;
+import org.bukkit.command.*;
+import org.bukkit.configuration.file.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,7 +13,6 @@ import java.util.*;
 
 public class SimpleCommandManager implements CommandExecutor, TabCompleter {
     private final Plugin plugin;
-
 
     public SimpleCommandManager(Plugin plugin) {
         this.plugin = plugin;
@@ -50,8 +42,8 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
             }
 
             String itemName = args[1].toLowerCase();
-
             File dataFolder = plugin.getDataFolder();
+
             if (dataFolder.exists()) {
                 File[] files = dataFolder.listFiles((dir, name) -> name.endsWith(".yml"));
                 if (files != null) {
@@ -61,12 +53,11 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
                             ItemStack itemStack = loadItemFromYAML(file, itemName);
                             if (itemStack != null) {
                                 player.getInventory().addItem(itemStack);
-                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6[&eSimpleItemsLite&6] &aYou have received the item:&2 " + itemName));
-                                return true;
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6[&eSimpleItemsLite&6] &aYou have received the item: &2" + itemName));
                             } else {
                                 sender.sendMessage(ChatColor.translateAlternateColorCodes('&', "&6[&eSimpleItemsLite&6] &cError loading the YAML file"));
-                                return true;
                             }
+                            return true;
                         }
                     }
                 }
@@ -78,7 +69,6 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
 
         sender.sendMessage(ChatColor.RED + "Correct usage: /simpleitemslite give (item)");
         return true;
-
     }
 
     private ItemStack loadItemFromYAML(File file, String itemName) {
@@ -159,7 +149,10 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
 
         if (args.length == 1) {
             completions.add("give");
-        } else if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
+            return completions;
+        }
+
+        if (args.length == 2 && args[0].equalsIgnoreCase("give")) {
             File dataFolder = plugin.getDataFolder();
             if (dataFolder.exists()) {
                 String partialFileName = args[1].toLowerCase();
@@ -171,6 +164,7 @@ public class SimpleCommandManager implements CommandExecutor, TabCompleter {
                 }
             }
         }
+
         return completions;
     }
 }

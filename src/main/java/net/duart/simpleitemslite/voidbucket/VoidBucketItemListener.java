@@ -31,69 +31,79 @@ public class VoidBucketItemListener implements Listener {
     }
 
     public void loadVoidBucketItemFromConfig() {
-        Material material = Material.BUCKET;
-        voidBucketItem = new ItemStack(material);
+        voidBucketItem = new ItemStack(Material.BUCKET);
         ItemMeta itemMeta = voidBucketItem.getItemMeta();
 
-        if (itemMeta != null) {
-            File voidbucketConfigFile = new File(plugin.getDataFolder(), "VoidBucketItem.yml");
-            FileConfiguration config = YamlConfiguration.loadConfiguration(voidbucketConfigFile);
-
-            if (config.contains("VoidBucketItem")) {
-                ConfigurationSection voidBucketItemSection = config.getConfigurationSection("VoidBucketItem");
-                if (voidBucketItemSection != null) {
-                    String displayName = voidBucketItemSection.getString("DisplayName");
-                    assert displayName != null;
-                    displayName = ChatColor.translateAlternateColorCodes('&', displayName);
-                    itemMeta.setDisplayName(displayName);
-                    if (voidBucketItemSection.contains("Lore")) {
-                        List<String> lore = voidBucketItemSection.getStringList("Lore");
-                        lore = lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
-                        itemMeta.setLore(lore);
-                        itemMeta.setUnbreakable(true);
-                    }
-                    if (voidBucketItemSection.contains("Enchantments")) {
-                        ConfigurationSection enchantmentsSection = voidBucketItemSection.getConfigurationSection("Enchantments");
-                        if (enchantmentsSection != null) {
-                            for (String enchantmentKey : enchantmentsSection.getKeys(false)) {
-                                NamespacedKey namespacedKey = NamespacedKey.minecraft(enchantmentKey);
-                                Enchantment enchantment = Enchantment.getByKey(namespacedKey);
-                                if (enchantment != null) {
-                                    int level = enchantmentsSection.getInt(enchantmentKey);
-                                    itemMeta.addEnchant(enchantment, level, true);
-                                }
-                            }
-                        }
-                    }
-                    voidBucketItem.setItemMeta(itemMeta);
-                    plugin.getLogger().info("VoidBucketItem config loaded correctly");
-                    plugin.getLogger().info("Material: " + voidBucketItem.getType());
-                    plugin.getLogger().info("DisplayName: " + voidBucketItem.getItemMeta().getDisplayName());
-                    plugin.getLogger().info("Lore: " + voidBucketItem.getItemMeta().getLore());
-                    for (Map.Entry<Enchantment, Integer> entry : voidBucketItem.getEnchantments().entrySet()) {
-                        plugin.getLogger().info("Enchantment: " + entry.getKey().getKey() + ", Level: " + entry.getValue());
-                    }
-
-                    ItemStack translatedItem = new ItemStack(voidBucketItem);
-                    ItemMeta translatedMeta = translatedItem.getItemMeta();
-                    if (translatedMeta != null) {
-                        translatedMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', translatedMeta.getDisplayName()));
-                        List<String> translatedLore = translatedMeta.getLore();
-                        if (translatedLore != null) {
-                            translatedLore = translatedLore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
-                            translatedMeta.setLore(translatedLore);
-                        }
-                        translatedItem.setItemMeta(translatedMeta);
-                        voidBucketItem = translatedItem;
-                    }
-                } else {
-                    plugin.getLogger().warning("Error creating ItemMeta for VoidBucketItem");
-                }
-            } else {
-                plugin.getLogger().warning("Material not valid for VoidBucketItem");
-            }
-        } else {
+        if (itemMeta == null) {
             plugin.getLogger().warning("Error creating ItemMeta for VoidBucketItem");
+            return;
+        }
+
+        File voidbucketConfigFile = new File(plugin.getDataFolder(), "VoidBucketItem.yml");
+        FileConfiguration config = YamlConfiguration.loadConfiguration(voidbucketConfigFile);
+
+        if (!config.contains("VoidBucketItem")) {
+            plugin.getLogger().warning("VoidBucketItem configuration section not found.");
+            return;
+        }
+
+        ConfigurationSection voidBucketItemSection = config.getConfigurationSection("VoidBucketItem");
+        if (voidBucketItemSection == null) {
+            plugin.getLogger().warning("Invalid configuration section for VoidBucketItem.");
+            return;
+        }
+
+        String displayName = voidBucketItemSection.getString("DisplayName");
+        if (displayName == null) {
+            plugin.getLogger().warning("DisplayName not specified for VoidBucketItem.");
+            return;
+        }
+        itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+
+        if (voidBucketItemSection.contains("Lore")) {
+            List<String> lore = voidBucketItemSection.getStringList("Lore");
+            lore = lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
+            itemMeta.setLore(lore);
+            itemMeta.setUnbreakable(true);
+        }
+
+        if (voidBucketItemSection.contains("Enchantments")) {
+            ConfigurationSection enchantmentsSection = voidBucketItemSection.getConfigurationSection("Enchantments");
+            if (enchantmentsSection != null) {
+                for (String enchantmentKey : enchantmentsSection.getKeys(false)) {
+                    NamespacedKey namespacedKey = NamespacedKey.minecraft(enchantmentKey);
+                    Enchantment enchantment = Enchantment.getByKey(namespacedKey);
+                    if (enchantment != null) {
+                        int level = enchantmentsSection.getInt(enchantmentKey);
+                        itemMeta.addEnchant(enchantment, level, true);
+                    }
+                }
+            }
+        }
+
+        voidBucketItem.setItemMeta(itemMeta);
+
+        plugin.getLogger().info("VoidBucketItem config loaded correctly");
+        plugin.getLogger().info("Material: " + voidBucketItem.getType());
+        plugin.getLogger().info("DisplayName: " + voidBucketItem.getItemMeta().getDisplayName());
+        plugin.getLogger().info("Lore: " + voidBucketItem.getItemMeta().getLore());
+        for (Map.Entry<Enchantment, Integer> entry : voidBucketItem.getEnchantments().entrySet()) {
+            plugin.getLogger().info("Enchantment: " + entry.getKey().getKey() + ", Level: " + entry.getValue());
+        }
+
+        ItemStack translatedItem = new ItemStack(voidBucketItem);
+        ItemMeta translatedMeta = translatedItem.getItemMeta();
+        if (translatedMeta != null) {
+            translatedMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', translatedMeta.getDisplayName()));
+            List<String> translatedLore = translatedMeta.getLore();
+            if (translatedLore != null) {
+                translatedLore = translatedLore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
+                translatedMeta.setLore(translatedLore);
+            }
+            translatedItem.setItemMeta(translatedMeta);
+            voidBucketItem = translatedItem;
+        } else {
+            plugin.getLogger().warning("Error creating ItemMeta for translated VoidBucketItem.");
         }
     }
 }

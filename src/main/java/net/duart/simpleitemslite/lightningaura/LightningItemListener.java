@@ -48,60 +48,79 @@ public class LightningItemListener implements Listener {
     }
 
     public void loadLightningItemFromConfig() {
-        File LightningItemFile = new File(plugin.getDataFolder(), "LightningItem.yml");
-        if (!LightningItemFile.exists()) {
+        File lightningItemFile = new File(plugin.getDataFolder(), "LightningItem.yml");
+        if (!lightningItemFile.exists()) {
             plugin.saveResource("LightningItem.yml", false);
         }
-        FileConfiguration LightningItemConfig = YamlConfiguration.loadConfiguration(LightningItemFile);
-        if (LightningItemConfig.contains("LightningItem")) {
-            ConfigurationSection LightningItemSection = LightningItemConfig.getConfigurationSection("LightningItem");
-            if (LightningItemSection != null) {
-                String materialName = LightningItemSection.getString("Material");
-                if (materialName != null && !materialName.isEmpty()) {
-                    Material material = Material.getMaterial(materialName.toUpperCase());
-                    if (material != null) {
-                        LightningItem = new ItemStack(material);
-                        ItemMeta itemMeta = LightningItem.getItemMeta();
-                        if (itemMeta == null) {
-                            plugin.getLogger().warning("Error creating ItemMeta for LightningItem");
-                            return;
-                        }
-                        String displayName = LightningItemSection.getString("DisplayName");
-                        assert displayName != null;
-                        displayName = ChatColor.translateAlternateColorCodes('&', displayName);
-                        itemMeta.setDisplayName(displayName);
-                        if (LightningItemSection.contains("Lore")) {
-                            List<String> lore = LightningItemSection.getStringList("Lore");
-                            lore = lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
-                            itemMeta.setLore(lore);
-                            itemMeta.setUnbreakable(true);
-                            if (LightningItemSection.contains("Enchantments")) {
-                                ConfigurationSection enchantmentsSection = LightningItemSection.getConfigurationSection("Enchantments");
-                                if (enchantmentsSection != null) {
-                                    for (String enchantmentKey : enchantmentsSection.getKeys(false)) {
-                                        NamespacedKey namespacedKey = NamespacedKey.minecraft(enchantmentKey);
-                                        Enchantment enchantment = Enchantment.getByKey(namespacedKey);
-                                        if (enchantment != null) {
-                                            int level = enchantmentsSection.getInt(enchantmentKey);
-                                            itemMeta.addEnchant(enchantment, level, true);
-                                        }
-                                    }
-                                }
-                            }
-                            LightningItem.setItemMeta(itemMeta);
-                            plugin.getLogger().info("LightningItem config loaded correctly");
-                            plugin.getLogger().info("Material: " + LightningItem.getType());
-                            plugin.getLogger().info("DisplayName: " + LightningItem.getItemMeta().getDisplayName());
-                            plugin.getLogger().info("Lore: " + LightningItem.getItemMeta().getLore());
-                            for (Map.Entry<Enchantment, Integer> entry : LightningItem.getEnchantments().entrySet()) {
-                                plugin.getLogger().info("Enchantment: " + entry.getKey().getKey() + ", Level: " + entry.getValue());
-                            }
-                        }
+
+        FileConfiguration lightningItemConfig = YamlConfiguration.loadConfiguration(lightningItemFile);
+        if (!lightningItemConfig.contains("LightningItem")) {
+            plugin.getLogger().warning("Configuration section 'LightningItem' not found in LightningItem.yml");
+            return;
+        }
+
+        ConfigurationSection lightningItemSection = lightningItemConfig.getConfigurationSection("LightningItem");
+        if (lightningItemSection == null) {
+            plugin.getLogger().warning("Error loading configuration section 'LightningItem' from LightningItem.yml");
+            return;
+        }
+
+        String materialName = lightningItemSection.getString("Material");
+        if (materialName == null || materialName.isEmpty()) {
+            plugin.getLogger().warning("Material name not specified or invalid in LightningItem.yml");
+            return;
+        }
+
+        Material material = Material.getMaterial(materialName.toUpperCase());
+        if (material == null) {
+            plugin.getLogger().warning("Invalid material specified in LightningItem.yml: " + materialName);
+            return;
+        }
+
+        LightningItem = new ItemStack(material);
+        ItemMeta itemMeta = LightningItem.getItemMeta();
+        if (itemMeta == null) {
+            plugin.getLogger().warning("Error creating ItemMeta for LightningItem");
+            return;
+        }
+
+        String displayName = lightningItemSection.getString("DisplayName");
+        if (displayName == null) {
+            plugin.getLogger().warning("Display name not specified for LightningItem");
+        } else {
+            itemMeta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+        }
+
+        if (lightningItemSection.contains("Lore")) {
+            List<String> lore = lightningItemSection.getStringList("Lore");
+            lore = lore.stream().map(line -> ChatColor.translateAlternateColorCodes('&', line)).collect(Collectors.toList());
+            itemMeta.setLore(lore);
+            itemMeta.setUnbreakable(true);
+        }
+
+        if (lightningItemSection.contains("Enchantments")) {
+            ConfigurationSection enchantmentsSection = lightningItemSection.getConfigurationSection("Enchantments");
+            if (enchantmentsSection != null) {
+                for (String enchantmentKey : enchantmentsSection.getKeys(false)) {
+                    NamespacedKey namespacedKey = NamespacedKey.minecraft(enchantmentKey);
+                    Enchantment enchantment = Enchantment.getByKey(namespacedKey);
+                    if (enchantment != null) {
+                        int level = enchantmentsSection.getInt(enchantmentKey);
+                        itemMeta.addEnchant(enchantment, level, true);
                     } else {
-                        plugin.getLogger().warning("Material not valid for LightningItem");
+                        plugin.getLogger().warning("Invalid enchantment '" + enchantmentKey + "' for LightningItem");
                     }
                 }
             }
+        }
+
+        LightningItem.setItemMeta(itemMeta);
+        plugin.getLogger().info("LightningItem config loaded correctly");
+        plugin.getLogger().info("Material: " + LightningItem.getType());
+        plugin.getLogger().info("DisplayName: " + LightningItem.getItemMeta().getDisplayName());
+        plugin.getLogger().info("Lore: " + LightningItem.getItemMeta().getLore());
+        for (Map.Entry<Enchantment, Integer> entry : LightningItem.getEnchantments().entrySet()) {
+            plugin.getLogger().info("Enchantment: " + entry.getKey().getKey() + ", Level: " + entry.getValue());
         }
     }
 }
